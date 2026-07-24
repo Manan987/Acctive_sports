@@ -48,6 +48,33 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
+};
+
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#070b14" },
+  ],
+};
+
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: site.name,
+  url: site.url,
+  description: site.description,
+  email: site.email,
+  telephone: site.phones[0],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: `${site.address.line1}, ${site.address.line2}`,
+    addressLocality: site.address.city,
+    addressRegion: site.address.state,
+    postalCode: site.address.pin,
+    addressCountry: "IN",
+  },
+  sameAs: [site.instagram],
 };
 
 // Prevent theme flash before hydration
@@ -62,6 +89,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${sora.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
       </head>
       <body>
         <Providers>{children}</Providers>

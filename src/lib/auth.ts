@@ -1,11 +1,10 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
+import { env } from "./env";
 
 const COOKIE = "acctive_admin";
-const secret = new TextEncoder().encode(
-  process.env.AUTH_SECRET || "dev-secret-change-me"
-);
+const secret = new TextEncoder().encode(env.authSecret);
 
 export type AdminSession = { sub: string; email: string; name: string };
 

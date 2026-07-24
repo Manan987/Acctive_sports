@@ -93,23 +93,95 @@ in an interactive Claude session). Two easy ways to add them:
 
 ---
 
-## ☁️ Deploying to Vercel
+## ☁️ Deploying to production (Railway or Render)
 
-The site already runs on Vercel-style hosting. Two production notes:
+The project is production-hardened and **auto-switches from SQLite to PostgreSQL**
+the moment `DATABASE_URL` points at a Postgres database — no code changes needed.
+Deploys cleanly on **Railway**, **Render**, any Node VPS, or Docker.
 
-1. **Database** — SQLite can't be written on Vercel's serverless filesystem.
-   Use a hosted Postgres (free tiers: **Neon**, **Supabase**, or **Vercel Postgres**):
-   - In `prisma/schema.prisma`, set `provider = "postgresql"`.
-   - Set `DATABASE_URL` in Vercel env vars to your Postgres URL.
-   - Run `npx prisma db push` then `npm run db:seed` against it once.
+### Step 1 — Create a free Postgres database (Neon or Supabase)
+- Sign up at **neon.tech** (or **supabase.com**) → create a project.
+- Copy the **pooled** connection string → this is your `DATABASE_URL`.
 
-2. **Image uploads** — the local-disk upload (`/api/upload`) works for local dev and
-   self-hosting. On Vercel, switch it to **Vercel Blob** or **Cloudinary** (the route
-   returns `{ url }`, so only the storage call changes). Until then, use image URLs.
+### Step 2 — Create a free Cloudinary account (for product images)
+- Sign up at **cloudinary.com** → the Dashboard shows an "API Environment variable"
+  like `cloudinary://key:secret@cloud-name` → this is your `CLOUDINARY_URL`.
+- Railway/Render disks are ephemeral, so uploads need this to persist.
 
-**Env vars to set in Vercel:** `DATABASE_URL`, `AUTH_SECRET` (long random string),
-`ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_WHATSAPP_NUMBER`,
-`NEXT_PUBLIC_CONTACT_EMAIL`, and optionally `NEXT_PUBLIC_GA_ID`.
+### Step 3 — Deploy the repo
+
+**Railway** (railway.app)
+1. **New Project → Deploy from GitHub repo** → pick `Manan987/Acctive_sports`.
+2. It auto-detects Next.js: build `npm run build`, start `npm start`.
+3. Add the environment variables below (Variables tab).
+
+**Render** (render.com)
+1. **New → Blueprint** → connect this repo. It reads [`render.yaml`](render.yaml)
+   automatically (build/start/health-check all preconfigured; `AUTH_SECRET` is
+   auto-generated).
+2. Fill in the variables marked "you provide" below.
+
+### Step 4 — Environment variables
+Full list in [`.env.production.example`](.env.production.example):
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | Neon/Supabase URL (step 1) |
+| `AUTH_SECRET` | long random string (`openssl rand -base64 32`) — Render auto-generates |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | your admin login (**use a strong password**) |
+| `NEXT_PUBLIC_SITE_URL` | your live URL / custom domain |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | `919997100375` |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | your email |
+| `CLOUDINARY_URL` | from step 2 |
+| `NEXT_PUBLIC_GA_ID` | *(optional)* GA4 id |
+
+### Step 5 — Load the catalogue into the database (once)
+After the first successful deploy, from your computer run (with the production
+`DATABASE_URL` set in your shell — e.g. `export DATABASE_URL="postgres://…"`):
+```bash
+npm run db:deploy    # syncs schema + seeds 145 products + the admin user
+```
+> On Render the schema is also synced automatically each deploy via
+> `preDeployCommand` — but the **seed runs once, manually** (it resets the catalogue,
+> so it must not run on every deploy).
+
+### Step 6 — Verify
+- Open `https://<your-app-url>/api/health` → expect `{"status":"ok","db":"up"}`.
+- Log in at `/admin`, add a real product, and upload an image.
+
+---
+
+## 🌐 Connecting your custom domain
+
+1. Buy a domain (GoDaddy, Namecheap, Hostinger, etc.).
+2. In your host: **Railway → Settings → Networking → Custom Domain**, or
+   **Render → Settings → Custom Domains → Add**.
+3. The host shows a **CNAME** target — add it in your registrar's DNS:
+   - `www → <target the host gives you>` (CNAME), and set the root `@` to redirect
+     to `www` (or use your registrar's ALIAS/ANAME to the same target).
+4. Wait for DNS to propagate; SSL is issued automatically and free.
+5. Set `NEXT_PUBLIC_SITE_URL` to your domain and redeploy so SEO/OG links are correct.
+
+Every `git push` to `main` then auto-deploys to your domain.
+
+> **Also supported:** a Node VPS (`npm run build` → `npm start` behind Nginx, with
+> `output: "standalone"` already enabled) or Docker. Ask if you want a Dockerfile.
+
+---
+
+## 🔒 Production checklist (already built in)
+
+- ✅ Auto Postgres switch (SQLite dev → Postgres prod, zero schema edits)
+- ✅ Persistent image uploads via Cloudinary / Vercel Blob (local-disk fallback in dev)
+- ✅ Security headers (HSTS, X-Frame-Options, nosniff, Permissions-Policy)
+- ✅ `AUTH_SECRET` enforced in production (build/run fails if missing)
+- ✅ Admin + API marked `noindex`; `robots.txt` disallows them
+- ✅ Spam protection on public forms (honeypot + per-IP rate limit)
+- ✅ Error, loading & global-error boundaries
+- ✅ SEO: metadata, canonical, Open Graph **image**, product & Organization JSON-LD,
+  dynamic `sitemap.xml`, `robots.txt`
+- ✅ PWA `manifest`, SVG favicon, theme-color
+- ✅ Health check at `/api/health`
 
 ---
 

@@ -1,0 +1,36 @@
+# Render Blueprint — one-click deploy for ACCTIVE Sports.
+# In Render: New → Blueprint → connect this repo. It reads this file.
+# You still add the secret env vars marked sync:false in the dashboard.
+services:
+  - type: web
+    name: acctive-sports
+    runtime: node
+    region: singapore # closest Render region to India
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    # Sync the DB schema on every deploy (safe & idempotent; does NOT wipe data).
+    # Seed the products ONCE manually after first deploy: npm run db:seed
+    preDeployCommand: npx prisma db push --skip-generate
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        sync: false # paste your Neon/Supabase Postgres URL
+      - key: AUTH_SECRET
+        generateValue: true # Render generates a strong secret for you
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false # your Render URL or custom domain
+      - key: NEXT_PUBLIC_WHATSAPP_NUMBER
+        value: "919997100375"
+      - key: NEXT_PUBLIC_CONTACT_EMAIL
+        value: activesportswears@gmail.com
+      - key: CLOUDINARY_URL
+        sync: false # cloudinary://key:secret@cloud-name (for image uploads)
+      - key: NEXT_PUBLIC_GA_ID
+        sync: false

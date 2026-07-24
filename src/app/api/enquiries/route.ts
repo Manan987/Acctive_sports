@@ -2,9 +2,19 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { enquirySchema } from "@/lib/validation";
 import { getSession } from "@/lib/auth";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 // Public: submit a quote request or contact message
 export async function POST(req: Request) {
+  // Basic abuse protection: max 5 submissions/minute per IP
+  const limit = rateLimit(`enquiry:${clientIp(req)}`, 5, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again in a minute." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter ?? 60) } }
+    );
+  }
+
   let body: unknown;
   try {
     body = await req.json();
@@ -21,6 +31,11 @@ export async function POST(req: Request) {
   }
 
   const data = parsed.data;
+
+  // Honeypot tripped → silently accept (don't tip off bots) but don't store
+  if (data.website && data.website.trim() !== "") {
+    return NextResponse.json({ ok: true }, { status: 201 });
+  }
   const enquiry = await prisma.enquiry.create({
     data: {
       name: data.name,

@@ -3,23 +3,30 @@
   "version": "1.0.0",
   "private": true,
   "description": "ACCTIVE Sports Industries — full-stack ecommerce & catalogue website",
+  "engines": {
+    "node": ">=18.18.0"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
+    "dev": "npm run db:provider && next dev",
+    "build": "npm run db:provider && prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
-    "db:push": "prisma db push",
+    "postinstall": "npm run db:provider && prisma generate",
+    "db:provider": "node scripts/prisma-provider.mjs",
+    "db:push": "npm run db:provider && prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma db push --force-reset && tsx prisma/seed.ts"
+    "db:studio": "npm run db:provider && prisma studio",
+    "db:reset": "npm run db:provider && prisma db push --force-reset && tsx prisma/seed.ts",
+    "db:deploy": "npm run db:provider && prisma db push && tsx prisma/seed.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@vercel/blob": "^0.27.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "jose": "^5.9.6",
     "next": "14.2.15",

@@ -5,6 +5,7 @@ import { whatsappLink } from "@/lib/site";
 
 export function ContactForm() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });
+  const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -16,7 +17,7 @@ export function ContactForm() {
       const res = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, source: "contact", items: [] }),
+        body: JSON.stringify({ ...form, website, source: "contact", items: [] }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -47,6 +48,17 @@ export function ContactForm() {
 
   return (
     <form onSubmit={submit} className="card space-y-4 p-6 sm:p-8">
+      {/* Honeypot — hidden from real users */}
+      <input
+        type="text"
+        name="website"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+      />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="label" htmlFor="c-name">Name *</label>

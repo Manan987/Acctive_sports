@@ -9,6 +9,7 @@ import { whatsappLink } from "@/lib/site";
 export default function QuotePage() {
   const { items, update, remove, clear } = useQuote();
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });
+  const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -24,6 +25,7 @@ export default function QuotePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          website,
           source: "quote",
           items: items.map((i) => ({
             productId: i.productId,
@@ -146,6 +148,17 @@ export default function QuotePage() {
           {/* Contact form */}
           <div>
             <form onSubmit={submit} className="card sticky top-20 space-y-3 p-6">
+              {/* Honeypot — hidden from real users */}
+              <input
+                type="text"
+                name="website"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="absolute -left-[9999px] h-0 w-0 opacity-0"
+              />
               <div className="flex items-center justify-between">
                 <h2 className="font-display text-lg font-bold">Your details</h2>
                 <span className="badge">{items.length} items · {totalPieces} pcs</span>
