@@ -1,0 +1,76 @@
+// ACCTIVE Sports Industries — data model
+// Local dev uses SQLite. For production on Vercel, change provider to
+// "postgresql" and point DATABASE_URL at a Postgres instance (Neon/Supabase/Vercel Postgres).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  order       Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  // JSON-encoded string arrays (SQLite has no native array type)
+  images      String   @default("[]")
+  fabrics     String   @default("[]")
+  sizes       String   @default("[]")
+  sports      String   @default("[]")
+  // Optional pricing — enables the "payments later" path without a rebuild
+  price       Float?
+  moq         Int      @default(50) // minimum order quantity
+  sku         String?
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model Enquiry {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String
+  company    String?
+  message    String?
+  // JSON-encoded cart line items: [{ productId, name, qty, size, fabric, note }]
+  items      String   @default("[]")
+  // One of: NEW | IN_PROGRESS | QUOTED | CLOSED (SQLite has no enum type)
+  status     String   @default("NEW")
+  source     String   @default("quote") // "quote" | "contact"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([status])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String   @default("Admin")
+  createdAt    DateTime @default(now())
+}
