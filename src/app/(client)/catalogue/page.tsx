@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { getCategories, getProducts } from "@/lib/data";
-import { ProductCard } from "@/components/client/ProductCard";
+import { ProductGrid } from "@/components/client/ProductGrid";
 import { CatalogueFilters } from "@/components/client/CatalogueFilters";
+import { ActiveFilters } from "@/components/client/ActiveFilters";
 import { FABRICS, SPORTS } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -35,11 +36,13 @@ export default async function CataloguePage({
     slug: c.slug,
     count: c._count.products,
   }));
+  const categoryNames = Object.fromEntries(categories.map((c) => [c.slug, c.name]));
 
   return (
     <div className="container-x py-10 md:py-14">
       <header className="max-w-2xl">
-        <h1 className="font-display text-3xl font-extrabold sm:text-4xl">Catalogue</h1>
+        <p className="eyebrow">Our Range</p>
+        <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">Catalogue</h1>
         <p className="mt-2 text-ink-500 dark:text-ink-400">
           {products.length} design{products.length === 1 ? "" : "s"} — every piece is
           fully customizable with your team name, numbers, logo and colours.
@@ -48,20 +51,19 @@ export default async function CataloguePage({
 
       <div className="mt-8">
         <CatalogueFilters categories={catList} sports={SPORTS} fabrics={FABRICS} />
+        <ActiveFilters categoryNames={categoryNames} />
       </div>
 
       {products.length === 0 ? (
-        <div className="mt-16 text-center">
+        <div className="mt-16 rounded-2xl border border-dashed border-ink-200 py-16 text-center dark:border-ink-700">
           <p className="text-lg font-semibold">No products match your filters.</p>
           <p className="mt-1 text-ink-500 dark:text-ink-400">
             Try clearing filters or searching a different term.
           </p>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+        <div className="mt-8">
+          <ProductGrid products={products} />
         </div>
       )}
     </div>

@@ -13,7 +13,8 @@ export default function ContactPage() {
   return (
     <div className="container-x py-10 md:py-14">
       <header className="max-w-2xl">
-        <h1 className="font-display text-3xl font-extrabold sm:text-4xl">Contact Us</h1>
+        <p className="eyebrow">Get in touch</p>
+        <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">Contact Us</h1>
         <p className="mt-2 text-ink-500 dark:text-ink-400">
           Questions, custom designs or bulk enquiries — we&apos;re here to help. Reach out
           and our team will respond quickly.

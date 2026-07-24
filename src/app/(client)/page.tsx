@@ -9,6 +9,7 @@ import { CustomizeBanner } from "@/components/client/marketing/CustomizeBanner";
 import { Testimonials } from "@/components/client/marketing/Testimonials";
 import { PartnersMarquee } from "@/components/client/marketing/PartnersMarquee";
 import { StatsCounter } from "@/components/client/marketing/StatsCounter";
+import { FAQ } from "@/components/client/marketing/FAQ";
 import { Reveal } from "@/components/client/marketing/Reveal";
 
 export const dynamic = "force-dynamic";
@@ -189,6 +190,17 @@ export default async function HomePage() {
           Manufacturing for
         </p>
         <PartnersMarquee />
+      </section>
+
+      {/* FAQ */}
+      <section className="container-x pb-4 pt-16 md:pt-20">
+        <Reveal className="text-center">
+          <p className="eyebrow">Good to know</p>
+          <h2 className="section-heading mt-2">Frequently asked questions</h2>
+        </Reveal>
+        <div className="mt-10">
+          <FAQ />
+        </div>
       </section>
 
       {/* Final CTA */}
