@@ -51,20 +51,22 @@ export default async function HomePage() {
             <Reveal key={cat.id} delay={i * 60}>
               <Link
                 href={`/catalogue?category=${cat.slug}`}
-                className="group relative flex h-52 items-end overflow-hidden rounded-2xl bg-ink-900 p-6 text-white transition hover:-translate-y-1 hover:shadow-2xl"
+                className="group relative flex h-56 items-end overflow-hidden rounded-2xl bg-ink-900 p-6 text-white transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-flame-500/20"
               >
                 <Image
                   src={cat.image || "/placeholder-product.svg"}
                   alt=""
                   fill
-                  className="object-cover opacity-35 transition duration-500 group-hover:scale-110 group-hover:opacity-45"
+                  className="object-cover opacity-30 transition duration-500 group-hover:scale-110 group-hover:opacity-50"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+                {/* Flame accent on hover */}
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-flame-500 to-electric-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="relative">
                   <h3 className="font-display text-xl font-bold">{cat.name}</h3>
-                  <p className="mt-1 flex items-center gap-1 text-sm text-ink-200">
-                    {cat._count.products} designs
-                    <span className="transition group-hover:translate-x-1">→</span>
+                  <p className="mt-1.5 flex items-center gap-1.5 text-sm text-ink-200">
+                    <span className="rounded-full bg-flame-500/20 px-2 py-0.5 text-xs font-bold text-flame-400">{cat._count.products} designs</span>
+                    <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                   </p>
                 </div>
               </Link>
@@ -205,24 +207,30 @@ export default async function HomePage() {
 
       {/* Final CTA */}
       <section className="container-x py-16 md:py-20">
-        <Reveal className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-flame-600 to-flame-500 px-8 py-14 text-center text-white md:py-20">
-          <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/20 blur-[90px]" />
+        <Reveal className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-ink-950 via-flame-950 to-ink-900 px-8 py-16 text-center text-white md:py-24">
+          <div className="absolute inset-0 bg-grid opacity-30" />
+          <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-flame-500/30 blur-[120px]" />
+          <div className="absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-electric-500/20 blur-[120px]" />
           <div className="relative mx-auto max-w-2xl">
-            <h2 className="font-display text-3xl font-extrabold sm:text-4xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm">
+              🏆 Trusted by 500+ teams across India
+            </span>
+            <h2 className="mt-6 font-display text-3xl font-extrabold sm:text-5xl">
               Ready to kit out your team?
             </h2>
-            <p className="mt-4 text-white/90">
+            <p className="mt-4 text-lg text-ink-200">
               Browse 145+ customizable designs — jerseys, shorts, tracksuits and more.
               Add to cart, pick your size, and we&apos;ll handle the rest.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="/catalogue" className="btn-lg btn bg-white text-flame-600 hover:bg-ink-50">
-                Shop Now
+              <Link href="/catalogue" className="btn-lg btn bg-flame-500 text-white shadow-xl shadow-flame-500/40 hover:bg-flame-600 pulse-glow">
+                🛒 Shop Now
               </Link>
-              <Link href="/contact" className="btn-lg btn border border-white/40 bg-white/10 text-white hover:bg-white/20">
-                Talk to Us
+              <Link href="/contact" className="btn-lg btn border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20">
+                💬 Talk to Us
               </Link>
             </div>
+            <p className="mt-6 text-sm text-ink-400">Free mockup · No minimum for first order · Pan-India delivery</p>
           </div>
         </Reveal>
       </section>

@@ -10,7 +10,10 @@ export function ProductCard({ product }: { product: ProductView }) {
   const price = formatINR(product.price);
 
   return (
-    <div className="group card overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink-900/10">
+    <div className="group card card-hover relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-flame-500/15">
+      {/* Gradient glow on hover */}
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-flame-500/0 to-electric-500/0 opacity-0 transition-opacity duration-300 group-hover:from-flame-500/5 group-hover:to-electric-500/5 group-hover:opacity-100" />
+
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-ink-100 dark:bg-ink-800">
           {/* Front image */}
@@ -19,7 +22,7 @@ export function ProductCard({ product }: { product: ProductView }) {
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-opacity duration-500 group-hover:opacity-0"
+            className="object-cover transition-all duration-500 group-hover:scale-105 group-hover:opacity-0"
           />
           {/* Back image (hover reveal) */}
           <Image
@@ -28,18 +31,30 @@ export function ProductCard({ product }: { product: ProductView }) {
             fill
             aria-hidden
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="scale-105 object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            className="scale-110 object-cover opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100"
           />
 
+          {/* Overlay gradient on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-950/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
           {/* Badges */}
-          {product.featured && (
-            <span className="absolute left-3 top-3 rounded-full bg-flame-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg">
-              Featured
-            </span>
-          )}
+          <div className="absolute left-3 top-3 flex flex-col gap-1.5">
+            {product.featured && (
+              <span className="rounded-full bg-flame-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg shadow-flame-500/40">
+                ⭐ Featured
+              </span>
+            )}
+          </div>
           <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold text-ink-700 backdrop-blur dark:bg-ink-900/90 dark:text-ink-200">
             Customizable
           </span>
+
+          {/* Quick view on hover */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            <span className="whitespace-nowrap rounded-full bg-white/95 px-4 py-1.5 text-xs font-bold text-ink-900 shadow-lg backdrop-blur">
+              Quick View →
+            </span>
+          </div>
         </div>
       </Link>
 
@@ -48,7 +63,7 @@ export function ProductCard({ product }: { product: ProductView }) {
           <p className="text-[11px] font-bold uppercase tracking-widest text-flame-500">
             {product.categoryName}
           </p>
-          <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-ink-900 hover:text-flame-500 dark:text-white">
+          <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-ink-900 transition-colors group-hover:text-flame-500 dark:text-white">
             {product.name}
           </h3>
         </Link>
@@ -56,16 +71,35 @@ export function ProductCard({ product }: { product: ProductView }) {
         {/* Price row */}
         <div className="mt-2 flex items-center justify-between">
           {price ? (
-            <span className="text-base font-extrabold text-ink-900 dark:text-white">{price}</span>
+            <div>
+              <span className="text-base font-extrabold text-ink-900 dark:text-white">{price}</span>
+              <span className="ml-1.5 text-[10px] text-ink-400">/ piece</span>
+            </div>
           ) : (
-            <span className="text-xs font-semibold text-flame-500">Price on request</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-flame-500/10 px-2.5 py-1 text-xs font-bold text-flame-600 dark:text-flame-400">
+              💬 Price on request
+            </span>
           )}
-          {product.sizes.length > 0 && (
-            <span className="text-[11px] text-ink-400">
-              {product.sizes.slice(0, 4).join(" · ")}{product.sizes.length > 4 ? " …" : ""}
+          {product.moq > 0 && (
+            <span className="text-[10px] font-medium text-ink-400">
+              MOQ: {product.moq}
             </span>
           )}
         </div>
+
+        {/* Sizes preview */}
+        {product.sizes.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {product.sizes.slice(0, 5).map((s) => (
+              <span key={s} className="rounded border border-ink-200 px-1.5 py-0.5 text-[10px] font-medium text-ink-500 dark:border-ink-700 dark:text-ink-400">
+                {s}
+              </span>
+            ))}
+            {product.sizes.length > 5 && (
+              <span className="text-[10px] text-ink-400">+{product.sizes.length - 5}</span>
+            )}
+          </div>
+        )}
 
         {/* Quick Add to Cart */}
         <div className="mt-3">
