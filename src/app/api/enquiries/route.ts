@@ -34,6 +34,7 @@ export async function POST(req: Request) {
 
   // Honeypot tripped → silently accept (don't tip off bots) but don't store
   if (data.website && data.website.trim() !== "") {
+    console.warn("[enquiries] Honeypot tripped — discarding submission (website field was filled)");
     return NextResponse.json({ ok: true }, { status: 201 });
   }
   const enquiry = await prisma.enquiry.create({

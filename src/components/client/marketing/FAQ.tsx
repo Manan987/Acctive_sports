@@ -5,7 +5,7 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "What is your minimum order quantity (MOQ)?",
-    a: "Most products start at 50 pieces, though it can vary by item. Share your requirement and we'll confirm the MOQ and pricing for your specific design.",
+    a: "You can order as little as 1 piece! For bulk team orders (50+ pieces) we offer special factory pricing. Add to cart and mention your quantity at checkout.",
   },
   {
     q: "Can I get my team name, numbers and logo printed?",
@@ -25,7 +25,7 @@ const FAQS = [
   },
   {
     q: "How do I place an order?",
-    a: "Add designs to your quote list (or send them via WhatsApp), submit your details, and our team will reply with a custom quote and mockup. Once approved, we begin production.",
+    a: "Simply add products to your cart, select your size, and proceed to checkout. Fill in your details and we'll reply with a custom mockup and final price. For WhatsApp orders, tap the WhatsApp button on any product.",
   },
 ];
 

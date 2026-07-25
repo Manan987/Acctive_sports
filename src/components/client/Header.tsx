@@ -4,14 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
-import { useQuote } from "@/context/QuoteContext";
+import { useCart } from "@/context/CartContext";
 import { SPORTS } from "@/lib/site";
 
 type Cat = { name: string; slug: string; count: number };
 
 export function Header({ categories = [] }: { categories?: Cat[] }) {
   const pathname = usePathname();
-  const { count } = useQuote();
+  const { totalItems, openDrawer } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState(false);
@@ -42,15 +42,16 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition ${
+      className={`sticky top-0 z-50 transition-all duration-200 ${
         scrolled || mega
-          ? "border-b border-ink-100 bg-white/85 backdrop-blur-md dark:border-ink-800 dark:bg-ink-950/85"
+          ? "border-b border-ink-100 bg-white/90 backdrop-blur-md dark:border-ink-800 dark:bg-ink-950/90"
           : "bg-transparent"
       }`}
     >
       <div className="container-x flex h-16 items-center justify-between gap-4">
+        {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-flame-500 font-display text-lg font-black text-white">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-flame-500 font-display text-lg font-black text-white shadow-lg shadow-flame-500/30">
             A
           </span>
           <span className="font-display text-lg font-extrabold tracking-tight">
@@ -58,10 +59,11 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
           </span>
         </Link>
 
+        {/* Desktop Nav */}
         <nav className="hidden items-center gap-1 md:flex">
           <NavLink href="/" active={isActive("/")}>Home</NavLink>
 
-          {/* Catalogue with mega menu */}
+          {/* Catalogue mega-menu */}
           <div className="relative" onMouseEnter={openMega} onMouseLeave={closeMega}>
             <Link
               href="/catalogue"
@@ -72,7 +74,7 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
               }`}
               aria-expanded={mega}
             >
-              Catalogue
+              Shop
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition ${mega ? "rotate-180" : ""}`}>
                 <path d="M6 9l6 6 6-6" />
               </svg>
@@ -109,8 +111,8 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
                         </Link>
                       ))}
                     </div>
-                    <Link href="/quote" className="btn-primary mt-5 w-full text-sm">
-                      Request a bulk quote →
+                    <Link href="/catalogue" className="btn-primary mt-5 w-full text-sm">
+                      View All Products →
                     </Link>
                   </div>
                 </div>
@@ -122,26 +124,33 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
           <NavLink href="/contact" active={isActive("/contact")}>Contact</NavLink>
         </nav>
 
+        {/* Right actions */}
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <Link
-            href="/quote"
+
+          {/* Cart icon button */}
+          <button
+            onClick={openDrawer}
             className="relative grid h-9 w-9 place-items-center rounded-full text-ink-600 transition hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800"
-            aria-label="Quote request list"
+            aria-label={`Cart (${totalItems} items)`}
           >
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
             </svg>
-            {count > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-flame-500 px-1 text-[10px] font-bold text-white">
-                {count}
+                {totalItems > 9 ? "9+" : totalItems}
               </span>
             )}
+          </button>
+
+          {/* "Shop Now" CTA */}
+          <Link href="/catalogue" className="btn-primary ml-1 hidden sm:inline-flex">
+            Shop Now
           </Link>
-          <Link href="/quote" className="btn-primary ml-1 hidden sm:inline-flex">
-            Get a Quote
-          </Link>
+
+          {/* Mobile hamburger */}
           <button
             className="grid h-9 w-9 place-items-center rounded-full text-ink-700 dark:text-ink-200 md:hidden"
             onClick={() => setOpen((o) => !o)}
@@ -159,7 +168,7 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
         <nav className="max-h-[70vh] overflow-y-auto border-t border-ink-100 bg-white px-4 py-3 dark:border-ink-800 dark:bg-ink-950 md:hidden">
           {[
             { href: "/", label: "Home" },
-            { href: "/catalogue", label: "Catalogue" },
+            { href: "/catalogue", label: "Shop" },
             { href: "/about", label: "About" },
             { href: "/contact", label: "Contact" },
           ].map((item) => (
@@ -185,7 +194,12 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
               ))}
             </div>
           )}
-          <Link href="/quote" className="btn-primary mt-3 w-full">Get a Quote</Link>
+          <button
+            onClick={() => { setOpen(false); openDrawer(); }}
+            className="btn-primary mt-3 w-full"
+          >
+            View Cart ({totalItems})
+          </button>
         </nav>
       )}
     </header>

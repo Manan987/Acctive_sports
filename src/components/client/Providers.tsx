@@ -1,7 +1,7 @@
 "use client";
 
-import { QuoteProvider } from "@/context/QuoteContext";
+import { CartProvider } from "@/context/CartContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <QuoteProvider>{children}</QuoteProvider>;
+  return <CartProvider>{children}</CartProvider>;
 }

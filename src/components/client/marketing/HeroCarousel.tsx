@@ -28,8 +28,8 @@ const SLIDES: Slide[] = [
       "Vibrant sublimated jerseys, shorts, lowers & tracksuits — designed to your brief and manufactured in-house.",
     ctaHref: "/catalogue",
     ctaLabel: "Browse Catalogue",
-    altHref: "/quote",
-    altLabel: "Request a Quote",
+    altHref: "/contact",
+    altLabel: "Talk to Us",
     gradient: "from-ink-950 via-ink-900 to-flame-900/50",
   },
   {
@@ -58,8 +58,8 @@ const SLIDES: Slide[] = [
     ),
     subtitle:
       "From academies and clubs to schools and retail labels — factory pricing with pan-India delivery.",
-    ctaHref: "/quote",
-    ctaLabel: "Get Bulk Pricing",
+    ctaHref: "/catalogue",
+    ctaLabel: "Shop Bulk Kits",
     altHref: "/contact",
     altLabel: "Talk to Us",
     gradient: "from-ink-950 via-flame-950 to-ink-900",

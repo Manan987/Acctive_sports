@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ProductView } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
-import { QuickQuoteButton } from "./QuickQuoteButton";
+import { QuickAddToCart } from "./QuickAddToCart";
 
 export function ProductCard({ product }: { product: ProductView }) {
   const img = product.images[0] || "/placeholder-product.svg";
@@ -10,10 +10,10 @@ export function ProductCard({ product }: { product: ProductView }) {
   const price = formatINR(product.price);
 
   return (
-    <div className="group card overflow-hidden transition hover:-translate-y-1 hover:shadow-xl hover:shadow-ink-900/10">
+    <div className="group card overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink-900/10">
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-ink-100 dark:bg-ink-800">
-          {/* front image */}
+          {/* Front image */}
           <Image
             src={img}
             alt={product.name}
@@ -21,7 +21,7 @@ export function ProductCard({ product }: { product: ProductView }) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-opacity duration-500 group-hover:opacity-0"
           />
-          {/* back image (revealed on hover) */}
+          {/* Back image (hover reveal) */}
           <Image
             src={imgBack}
             alt=""
@@ -30,8 +30,10 @@ export function ProductCard({ product }: { product: ProductView }) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="scale-105 object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           />
+
+          {/* Badges */}
           {product.featured && (
-            <span className="absolute left-3 top-3 rounded-full bg-flame-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+            <span className="absolute left-3 top-3 rounded-full bg-flame-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg">
               Featured
             </span>
           )}
@@ -43,30 +45,38 @@ export function ProductCard({ product }: { product: ProductView }) {
 
       <div className="p-4">
         <Link href={`/products/${product.slug}`} className="block">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-flame-500">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-flame-500">
             {product.categoryName}
           </p>
           <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-ink-900 hover:text-flame-500 dark:text-white">
             {product.name}
           </h3>
         </Link>
+
+        {/* Price row */}
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-xs text-ink-500 dark:text-ink-400">MOQ {product.moq} pcs</span>
           {price ? (
-            <span className="text-sm font-bold text-ink-900 dark:text-white">{price}</span>
+            <span className="text-base font-extrabold text-ink-900 dark:text-white">{price}</span>
           ) : (
-            <span className="text-xs font-semibold text-flame-500">On request</span>
+            <span className="text-xs font-semibold text-flame-500">Price on request</span>
+          )}
+          {product.sizes.length > 0 && (
+            <span className="text-[11px] text-ink-400">
+              {product.sizes.slice(0, 4).join(" · ")}{product.sizes.length > 4 ? " …" : ""}
+            </span>
           )}
         </div>
+
+        {/* Quick Add to Cart */}
         <div className="mt-3">
-          <QuickQuoteButton
+          <QuickAddToCart
             productId={product.id}
             name={product.name}
             slug={product.slug}
             image={img}
-            size={product.sizes[0] ?? "L"}
+            sizes={product.sizes}
             fabric={product.fabrics[0] ?? ""}
-            moq={product.moq}
+            price={product.price}
           />
         </div>
       </div>

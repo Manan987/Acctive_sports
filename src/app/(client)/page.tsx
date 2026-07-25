@@ -212,12 +212,12 @@ export default async function HomePage() {
               Ready to kit out your team?
             </h2>
             <p className="mt-4 text-white/90">
-              Send us your design brief and quantities — we&apos;ll get back with a custom
-              quote and a free digital mockup.
+              Browse 145+ customizable designs — jerseys, shorts, tracksuits and more.
+              Add to cart, pick your size, and we&apos;ll handle the rest.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="/quote" className="btn-lg btn bg-white text-flame-600 hover:bg-ink-50">
-                Request a Quote
+              <Link href="/catalogue" className="btn-lg btn bg-white text-flame-600 hover:bg-ink-50">
+                Shop Now
               </Link>
               <Link href="/contact" className="btn-lg btn border border-white/40 bg-white/10 text-white hover:bg-white/20">
                 Talk to Us

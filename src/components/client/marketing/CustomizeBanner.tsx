@@ -37,7 +37,7 @@ export function CustomizeBanner() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/quote" className="btn-primary btn-lg">Start your order</Link>
+          <Link href="/catalogue" className="btn-primary btn-lg">Start Shopping</Link>
           <Link href="/catalogue" className="btn-lg btn border border-white/25 bg-white/10 text-white hover:bg-white/20">
             Browse designs
           </Link>

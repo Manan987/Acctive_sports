@@ -16,7 +16,8 @@ export const enquirySchema = z.object({
   phone: z.string().min(7, "Enter a valid phone number").max(40),
   company: z.string().max(160).optional(),
   message: z.string().max(4000).optional(),
-  source: z.enum(["quote", "contact"]).default("quote"),
+  source: z.enum(["quote", "contact", "cart"]).default("cart"),
+  paymentMethod: z.enum(["upi", "bank_transfer", "cod", "razorpay"]).optional(),
   items: z.array(enquiryItemSchema).max(100).default([]),
   // Honeypot: real users never fill this hidden field; bots do.
   website: z.string().optional(),

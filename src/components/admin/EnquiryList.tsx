@@ -24,6 +24,11 @@ const STATUS_COLOR: Record<string, string> = {
   QUOTED: "bg-electric-500/10 text-electric-600",
   CLOSED: "bg-green-500/10 text-green-600",
 };
+const SOURCE_COLOR: Record<string, string> = {
+  cart: "bg-violet-500/10 text-violet-600",
+  quote: "bg-amber-500/10 text-amber-600",
+  contact: "bg-sky-500/10 text-sky-600",
+};
 
 export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
   const router = useRouter();
@@ -77,7 +82,7 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-semibold">{e.name}</span>
                       <span className={`badge ${STATUS_COLOR[e.status] || ""}`}>{e.status.replace("_", " ")}</span>
-                      <span className="badge">{e.source}</span>
+                      <span className={`badge ${SOURCE_COLOR[e.source] || "badge"}`}>{e.source}</span>
                     </div>
                     <p className="mt-1 truncate text-sm text-ink-500">
                       {e.email} · {e.phone}
