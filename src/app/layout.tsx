@@ -48,7 +48,11 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
-  alternates: { canonical: "/" },
+  // NOTE: `alternates.canonical` must NOT be set here. Next.js inherits it into
+  // every child page, so `canonical: "/"` made /catalogue, /about, /contact and
+  // all 145 product pages declare themselves duplicates of the homepage —
+  // instructing search engines to drop them from the index. Each page now
+  // declares its own canonical instead.
 };
 
 export const viewport = {

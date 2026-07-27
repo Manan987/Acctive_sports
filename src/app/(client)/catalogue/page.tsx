@@ -3,6 +3,7 @@ import { getCategories, getProducts } from "@/lib/data";
 import { ProductGrid } from "@/components/client/ProductGrid";
 import { CatalogueFilters } from "@/components/client/CatalogueFilters";
 import { ActiveFilters } from "@/components/client/ActiveFilters";
+import { Pagination } from "@/components/client/Pagination";
 import { FABRICS, SPORTS } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
   title: "Catalogue",
   description:
     "Browse ACCTIVE Sports custom sportswear catalogue — collar & round-neck jerseys, shorts, lowers and tracksuits. Filter by category, sport and fabric.",
+  // Filter/sort/page combinations produce a large number of near-identical
+  // URLs; point them all at the clean catalogue URL.
+  alternates: { canonical: "/catalogue" },
 };
 
 type SearchParams = {
@@ -19,6 +23,7 @@ type SearchParams = {
   fabric?: string;
   q?: string;
   sort?: string;
+  page?: string;
 };
 
 export default async function CataloguePage({
@@ -26,10 +31,11 @@ export default async function CataloguePage({
 }: {
   searchParams: SearchParams;
 }) {
-  const [categories, products] = await Promise.all([
+  const [categories, page] = await Promise.all([
     getCategories(),
     getProducts(searchParams),
   ]);
+  const { products, total, totalPages } = page;
 
   const catList = categories.map((c) => ({
     name: c.name,
@@ -44,7 +50,7 @@ export default async function CataloguePage({
         <p className="eyebrow">Our Range</p>
         <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">Catalogue</h1>
         <p className="mt-2 text-ink-500 dark:text-ink-400">
-          {products.length} design{products.length === 1 ? "" : "s"} — every piece is
+          {total} design{total === 1 ? "" : "s"} — every piece is
           fully customizable with your team name, numbers, logo and colours.
         </p>
       </header>
@@ -64,6 +70,11 @@ export default async function CataloguePage({
       ) : (
         <div className="mt-8">
           <ProductGrid products={products} />
+          <Pagination
+            page={page.page}
+            totalPages={totalPages}
+            searchParams={searchParams}
+          />
         </div>
       )}
     </div>

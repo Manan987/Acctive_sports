@@ -2,7 +2,9 @@ import Link from "next/link";
 import { site, fullAddress, whatsappLink } from "@/lib/site";
 
 export function Footer() {
-  const year = 2026;
+  // Was hardcoded to 2026 — the copyright line would silently go stale.
+  // Safe to compute here: the client layout is already `force-dynamic`.
+  const year = new Date().getFullYear();
   return (
     <footer className="relative mt-20 border-t border-ink-100 bg-ink-50 dark:border-ink-800 dark:bg-ink-950">
       {/* Gradient top line */}

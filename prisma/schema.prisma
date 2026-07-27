@@ -39,22 +39,32 @@ model Product {
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@index([categoryId])
+  // Catalogue queries always filter on `published` and order by createdAt or
+  // featured — index them so listings stay fast as the catalogue grows.
+  @@index([published, createdAt])
+  @@index([published, featured])
 }
 
 model Enquiry {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  phone     String
-  company   String?
-  message   String?
-  items     String   @default("[]")
-  status    String   @default("NEW")
-  source    String   @default("quote")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  email         String
+  phone         String
+  company       String?
+  message       String?
+  items         String   @default("[]")
+  status        String   @default("NEW")
+  source        String   @default("quote")
+  // How the customer intends to pay: upi | bank_transfer | cod | razorpay.
+  paymentMethod String?
+  // Order total in INR, computed SERVER-side from catalogue prices at the time
+  // the order was placed. Null when every line is quote-only.
+  total         Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([status])
+  @@index([createdAt])
 }
 
 model AdminUser {

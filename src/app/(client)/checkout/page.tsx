@@ -59,6 +59,10 @@ export default function CheckoutPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    // Guard against a double submit: the button is disabled while sending, but
+    // Enter in a text field can still fire the form again before React
+    // re-renders, which would create two orders.
+    if (status === "sending") return;
     setStatus("sending");
     setErrorMsg("");
     try {

@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "./prisma";
 import { parseArray } from "./utils";
 
@@ -37,12 +38,28 @@ function toView(p: any): ProductView {
   };
 }
 
-export async function getCategories() {
-  return prisma.category.findMany({
-    orderBy: { order: "asc" },
-    include: { _count: { select: { products: true } } },
-  });
-}
+// SQLite's LIKE is case-insensitive for ASCII, so `contains` "just works" in
+// dev. PostgreSQL's LIKE is case-SENSITIVE, so the same search silently stops
+// matching once deployed — searching "jersey" would miss "Jersey". Postgres
+// needs an explicit `mode: "insensitive"`, which SQLite rejects outright, so
+// the flag has to be chosen from the live connection string.
+const isPostgres = /^postgres(ql)?:\/\//i.test(process.env.DATABASE_URL || "");
+const insensitive = isPostgres ? ({ mode: "insensitive" } as const) : {};
+
+// The site layout renders the category nav on EVERY page, and the layout is
+// force-dynamic — so this query used to run on every single request, including
+// a COUNT per category. The category list changes rarely; cache it briefly.
+export const getCategories = unstable_cache(
+  async () =>
+    prisma.category.findMany({
+      orderBy: { order: "asc" },
+      // The nav badge previously counted drafts too, so a category showing
+      // "12 designs" could open onto a page with 9.
+      include: { _count: { select: { products: { where: { published: true } } } } },
+    }),
+  ["categories-with-counts"],
+  { revalidate: 60, tags: ["categories"] }
+);
 
 export async function getFeaturedProducts(limit = 8): Promise<ProductView[]> {
   const products = await prisma.product.findMany({
@@ -64,35 +81,74 @@ export async function getLatestProducts(limit = 10): Promise<ProductView[]> {
   return products.map(toView);
 }
 
-export async function getProducts(opts: {
-  category?: string;
-  sport?: string;
-  fabric?: string;
-  q?: string;
-  sort?: string;
-} = {}): Promise<ProductView[]> {
+export const PRODUCTS_PER_PAGE = 24;
+
+export type ProductPage = {
+  products: ProductView[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
+};
+
+export async function getProducts(
+  opts: {
+    category?: string;
+    sport?: string;
+    fabric?: string;
+    q?: string;
+    sort?: string;
+    page?: number | string;
+    perPage?: number;
+  } = {}
+): Promise<ProductPage> {
+  const perPage = Math.min(Math.max(opts.perPage ?? PRODUCTS_PER_PAGE, 1), 60);
+
   const where: any = { published: true };
   if (opts.category) where.category = { slug: opts.category };
-  if (opts.q) {
-    where.name = { contains: opts.q };
-  }
-  // sport/fabric are stored as JSON strings; filter in app layer below
 
-  let products = await prisma.product.findMany({
+  const q = opts.q?.trim();
+  if (q) {
+    where.OR = [
+      { name: { contains: q, ...insensitive } },
+      { description: { contains: q, ...insensitive } },
+      { sku: { contains: q, ...insensitive } },
+    ];
+  }
+
+  // sports/fabrics are JSON arrays stored as text. Matching on the quoted value
+  // (`"Cricket"`) pins it to a whole array element, so "Cricket" can't match a
+  // hypothetical "Cricket Training". Doing this in SQL rather than in JS is
+  // what makes real pagination possible — the previous version loaded every
+  // published product into memory on every catalogue request just to filter it.
+  if (opts.sport) where.sports = { contains: JSON.stringify(opts.sport) };
+  if (opts.fabric) where.fabrics = { contains: JSON.stringify(opts.fabric) };
+
+  const orderBy =
+    opts.sort === "name"
+      ? { name: "asc" as const }
+      : opts.sort === "featured"
+      ? { featured: "desc" as const }
+      : { createdAt: "desc" as const };
+
+  const total = await prisma.product.count({ where });
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+
+  // Clamp out-of-range/garbage `?page=` values instead of rendering an empty grid.
+  const requested = Number(opts.page);
+  const page = Number.isFinite(requested)
+    ? Math.min(Math.max(Math.trunc(requested), 1), totalPages)
+    : 1;
+
+  const products = await prisma.product.findMany({
     where,
     include: { category: true },
-    orderBy:
-      opts.sort === "name"
-        ? { name: "asc" }
-        : opts.sort === "featured"
-        ? { featured: "desc" }
-        : { createdAt: "desc" },
+    orderBy,
+    skip: (page - 1) * perPage,
+    take: perPage,
   });
 
-  let views = products.map(toView);
-  if (opts.sport) views = views.filter((p) => p.sports.includes(opts.sport!));
-  if (opts.fabric) views = views.filter((p) => p.fabrics.includes(opts.fabric!));
-  return views;
+  return { products: products.map(toView), total, page, perPage, totalPages };
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductView | null> {
@@ -100,7 +156,9 @@ export async function getProductBySlug(slug: string): Promise<ProductView | null
     where: { slug },
     include: { category: true },
   });
-  return p ? toView(p) : null;
+  // An unpublished product must not be reachable by guessing its URL.
+  if (!p || !p.published) return null;
+  return toView(p);
 }
 
 export async function getRelatedProducts(
@@ -111,6 +169,9 @@ export async function getRelatedProducts(
   const products = await prisma.product.findMany({
     where: { categoryId, published: true, NOT: { id: excludeId } },
     include: { category: true },
+    // Without an explicit order the DB may return a different set each request,
+    // which makes the "More from…" rail flicker between renders.
+    orderBy: { createdAt: "desc" },
     take: limit,
   });
   return products.map(toView);

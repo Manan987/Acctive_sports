@@ -18,11 +18,22 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Product not found" };
+  if (!product) {
+    // Next 14 commits the HTTP status before a dynamically-rendered page can
+    // reach notFound(), so a missing product answers 200 with the not-found UI
+    // — a soft 404 that search engines will happily index. We cannot change
+    // the status from here, but we can keep the page out of the index.
+    return { title: "Product not found", robots: { index: false, follow: false } };
+  }
   return {
     title: product.name,
     description: product.description ?? site.description,
+    // Without this every product inherits the root layout's `canonical: "/"`,
+    // telling Google that all 145 product pages are duplicates of the homepage.
+    alternates: { canonical: `/products/${product.slug}` },
     openGraph: {
+      type: "website",
+      url: `${site.url}/products/${product.slug}`,
       title: product.name,
       description: product.description ?? undefined,
       images: product.images.length ? [product.images[0]] : undefined,

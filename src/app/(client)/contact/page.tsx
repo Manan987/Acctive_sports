@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Get in touch with ACCTIVE Sports Industries, Meerut. Call, email or WhatsApp us for custom sportswear quotes and bulk orders.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
