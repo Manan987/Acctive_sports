@@ -5,7 +5,12 @@ import { EnquiryList } from "@/components/admin/EnquiryList";
 export const dynamic = "force-dynamic";
 
 export default async function AdminEnquiries() {
-  const rows = await prisma.enquiry.findMany({ orderBy: { createdAt: "desc" } });
+  // Bounded: the admin list should not try to render every enquiry ever
+  // received in one page once this store has real traffic.
+  const rows = await prisma.enquiry.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 200,
+  });
 
   const enquiries = rows.map((e) => {
     let items: any[] = [];
@@ -24,6 +29,8 @@ export default async function AdminEnquiries() {
       message: e.message,
       status: e.status,
       source: e.source,
+      paymentMethod: e.paymentMethod,
+      total: e.total,
       items,
       createdAt: e.createdAt.toISOString(),
     };

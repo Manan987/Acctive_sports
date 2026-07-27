@@ -2,12 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Inter", system-ui, sans-serif;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/*
+ * Fonts are loaded by next/font in app/layout.tsx (Inter + Sora), which
+ * self-hosts them and defines --font-sans / --font-display on <html>.
+ *
+ * There used to be a `@import url(fonts.googleapis.com…)` here plus a :root
+ * block redefining both variables to Inter. Two bugs in three lines:
+ *   1. CSS requires @import to precede all other rules, so placing it after
+ *      @tailwind made the whole import invalid — it never loaded anything.
+ *   2. The :root block had the same specificity as next/font's class on <html>
+ *      and overrode --font-display with Inter, so every heading that asked for
+ *      the Sora display face silently rendered in Inter instead.
+ * Both are gone; next/font is now the single source of truth for typography.
+ */
 
 @layer base {
   html {

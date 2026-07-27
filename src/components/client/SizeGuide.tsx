@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Indicative apparel measurements (in inches). These are typical values —
 // edit to match your factory's actual size chart.
@@ -16,6 +16,20 @@ const ROWS = [
 
 export function SizeGuide() {
   const [open, setOpen] = useState(false);
+
+  // A modal that can only be dismissed by clicking the backdrop is a keyboard
+  // trap; and without a scroll lock the page behind it scrolls under the dialog.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <>
@@ -34,6 +48,9 @@ export function SizeGuide() {
         >
           <div
             className="w-full max-w-md rounded-2xl bg-white p-6 dark:bg-ink-900"
+            role="dialog"
+            aria-modal
+            aria-label="Size guide"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">

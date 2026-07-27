@@ -7,7 +7,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/api"],
+      // /cart and /checkout are per-visitor, client-rendered and have nothing
+      // to index; they are also "use client" pages so they cannot export
+      // metadata to noindex themselves.
+      disallow: ["/admin", "/api", "/cart", "/checkout"],
     },
     sitemap: `${base}/sitemap.xml`,
   };

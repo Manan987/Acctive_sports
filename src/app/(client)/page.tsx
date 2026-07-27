@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getCategories, getFeaturedProducts, getLatestProducts } from "@/lib/data";
@@ -13,6 +14,12 @@ import { FAQ } from "@/components/client/marketing/FAQ";
 import { Reveal } from "@/components/client/marketing/Reveal";
 
 export const dynamic = "force-dynamic";
+
+// The root layout no longer sets a blanket canonical (it was being inherited by
+// every page), so the homepage declares its own.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const WHY = [
   { title: "Vibrant Sublimation", desc: "Edge-to-edge, fade-proof prints that stay bright wash after wash.", icon: "M12 3v18M3 12h18" },

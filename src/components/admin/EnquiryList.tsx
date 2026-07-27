@@ -2,8 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { formatINR } from "@/lib/utils";
 
-type Item = { name: string; qty: number; size?: string; fabric?: string; note?: string };
+type Item = {
+  name: string;
+  qty: number;
+  size?: string;
+  fabric?: string;
+  note?: string;
+  price?: number | null;
+  lineTotal?: number | null;
+};
 type Enquiry = {
   id: string;
   name: string;
@@ -13,8 +22,17 @@ type Enquiry = {
   message: string | null;
   status: string;
   source: string;
+  paymentMethod: string | null;
+  total: number | null;
   items: Item[];
   createdAt: string;
+};
+
+const PAYMENT_LABEL: Record<string, string> = {
+  upi: "📲 UPI",
+  bank_transfer: "🏦 Bank Transfer",
+  cod: "💵 Cash on Delivery",
+  razorpay: "💳 Card / Net Banking",
 };
 
 const STATUSES = ["NEW", "IN_PROGRESS", "QUOTED", "CLOSED"] as const;
@@ -83,10 +101,16 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                       <span className="font-semibold">{e.name}</span>
                       <span className={`badge ${STATUS_COLOR[e.status] || ""}`}>{e.status.replace("_", " ")}</span>
                       <span className={`badge ${SOURCE_COLOR[e.source] || "badge"}`}>{e.source}</span>
+                      {e.paymentMethod && (
+                        <span className="badge bg-emerald-500/10 text-emerald-600">
+                          {PAYMENT_LABEL[e.paymentMethod] ?? e.paymentMethod}
+                        </span>
+                      )}
                     </div>
                     <p className="mt-1 truncate text-sm text-ink-500">
                       {e.email} · {e.phone}
                       {e.items.length > 0 && ` · ${e.items.length} items / ${totalPcs} pcs`}
+                      {e.total != null && ` · ${formatINR(e.total)}`}
                     </p>
                   </div>
                   <span className="text-ink-400">{open ? "▲" : "▼"}</span>
@@ -118,7 +142,7 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                       <div className="mt-4 overflow-x-auto rounded-xl border border-ink-100 dark:border-ink-800">
                         <table className="w-full text-sm">
                           <thead className="bg-ink-50 text-left text-xs uppercase text-ink-500 dark:bg-ink-950">
-                            <tr><th className="p-2">Product</th><th className="p-2">Qty</th><th className="p-2">Size</th><th className="p-2">Fabric</th><th className="p-2">Note</th></tr>
+                            <tr><th className="p-2">Product</th><th className="p-2">Qty</th><th className="p-2">Size</th><th className="p-2">Fabric</th><th className="p-2">Price</th><th className="p-2">Line total</th><th className="p-2">Note</th></tr>
                           </thead>
                           <tbody className="divide-y divide-ink-100 dark:divide-ink-800">
                             {e.items.map((it, i) => (
@@ -127,10 +151,20 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                                 <td className="p-2">{it.qty}</td>
                                 <td className="p-2">{it.size || "—"}</td>
                                 <td className="p-2">{it.fabric || "—"}</td>
+                                <td className="p-2">{it.price != null ? formatINR(it.price) : "On request"}</td>
+                                <td className="p-2 font-semibold">{it.lineTotal != null ? formatINR(it.lineTotal) : "—"}</td>
                                 <td className="p-2 text-ink-500">{it.note || "—"}</td>
                               </tr>
                             ))}
                           </tbody>
+                          {e.total != null && (
+                            <tfoot className="border-t border-ink-200 dark:border-ink-700">
+                              <tr>
+                                <td className="p-2 font-semibold" colSpan={5}>Order total</td>
+                                <td className="p-2 font-bold" colSpan={2}>{formatINR(e.total)}</td>
+                              </tr>
+                            </tfoot>
+                          )}
                         </table>
                       </div>
                     )}

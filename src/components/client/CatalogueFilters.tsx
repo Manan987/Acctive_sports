@@ -31,6 +31,9 @@ export function CatalogueFilters({
       const next = new URLSearchParams(params.toString());
       if (value) next.set(key, value);
       else next.delete(key);
+      // Changing a filter must return to page 1 — staying on page 5 of the old
+      // result set drops the user into the middle of an unrelated list.
+      next.delete("page");
       startTransition(() => {
         router.push(`/catalogue?${next.toString()}`, { scroll: false });
       });

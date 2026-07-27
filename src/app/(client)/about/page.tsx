@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "About Us",
   description:
     "ACCTIVE Sports Industries is a Meerut-based manufacturer of premium sublimated sportswear for teams, clubs, schools and brands across India.",
+  alternates: { canonical: "/about" },
 };
 
 const CAPABILITIES = [

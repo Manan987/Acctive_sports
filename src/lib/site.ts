@@ -1,3 +1,23 @@
+// NEXT_PUBLIC_SITE_URL feeds metadataBase, canonical URLs, OG tags, the sitemap
+// and robots.txt. If it is missing in production the whole site advertises
+// itself as http://localhost:3000 — search engines index nothing and every
+// social preview breaks — and the failure is completely silent. Warn loudly.
+function resolveSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!raw) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[site] NEXT_PUBLIC_SITE_URL is not set — canonical URLs, OG images and " +
+          "the sitemap will point at localhost. Set it to your public domain."
+      );
+    }
+    return "http://localhost:3000";
+  }
+  // Tolerate a bare domain ("acctivesports.com") and a trailing slash.
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  return withScheme.replace(/\/+$/, "");
+}
+
 // Central place for brand + contact info. Edit here to update the whole site.
 export const site = {
   name: "ACCTIVE Sports Industries",
@@ -18,14 +38,17 @@ export const site = {
     pin: "250002",
     country: "India",
   },
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  url: resolveSiteUrl(),
   gaId: process.env.NEXT_PUBLIC_GA_ID || "",
 } as const;
 
 export const fullAddress = `${site.address.line1}, ${site.address.line2}, ${site.address.city}, ${site.address.state} ${site.address.pin}, ${site.address.country}`;
 
 export function whatsappLink(message?: string) {
-  const base = `https://wa.me/${site.whatsapp}`;
+  // wa.me only accepts bare digits — a number configured as "+91 99971 00375"
+  // produces a dead link.
+  const number = site.whatsapp.replace(/\D/g, "");
+  const base = `https://wa.me/${number}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 

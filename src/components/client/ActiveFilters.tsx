@@ -29,6 +29,7 @@ export function ActiveFilters({ categoryNames }: { categoryNames: Record<string,
   const remove = (key: string) => {
     const next = new URLSearchParams(params.toString());
     next.delete(key);
+    next.delete("page"); // removing a filter widens the result set — restart at page 1
     startTransition(() => router.push(`/catalogue?${next.toString()}`, { scroll: false }));
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -19,12 +19,30 @@ export function CartDrawer() {
     return () => { document.body.style.overflow = ""; };
   }, [drawerOpen]);
 
-  // Close on Escape key
+  // Close on Escape — only while open, so the listener isn't swallowing Escape
+  // for other dialogs (e.g. the size guide) when the cart isn't showing.
   useEffect(() => {
+    if (!drawerOpen) return;
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeDrawer(); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [closeDrawer]);
+  }, [drawerOpen, closeDrawer]);
+
+  // The panel stays mounted and merely slides off-screen, so while it is closed
+  // every link and button inside it is still in the tab order and still read by
+  // screen readers — keyboard users would tab into an invisible cart.
+  const panelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el) return;
+    if (drawerOpen) {
+      el.removeAttribute("inert");
+      // Move focus into the dialog so the next Tab stays inside it.
+      el.querySelector<HTMLElement>("button, a[href]")?.focus();
+    } else {
+      el.setAttribute("inert", "");
+    }
+  }, [drawerOpen]);
 
   const hasPrice = items.some((i) => i.price != null);
   const subtotal = items.reduce((s, i) => s + (i.price ?? 0) * i.qty, 0);
@@ -40,9 +58,11 @@ export function CartDrawer() {
 
       {/* Drawer panel */}
       <div
+        ref={panelRef}
         className={`fixed inset-y-0 right-0 z-[70] flex w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-ink-900 ${drawerOpen ? "translate-x-0" : "translate-x-full"}`}
         role="dialog"
-        aria-modal
+        aria-modal={drawerOpen}
+        aria-hidden={!drawerOpen}
         aria-label="Shopping cart"
       >
         {/* Header */}

@@ -14,10 +14,14 @@ function slugify(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 }
 
-// Deterministic pick so re-seeding is stable
-function pick<T>(arr: T[], n: number): T[] {
+// Deterministic pick so re-seeding is stable. `offset` rotates the starting
+// point: the previous version always took the first N entries, so every product
+// in the catalogue ended up tagged with the same two or three sports and the
+// "Shop by Sport" filters returned almost nothing for the rest.
+function pick<T>(arr: T[], n: number, offset = 0): T[] {
   const out: T[] = [];
-  for (let i = 0; i < arr.length && out.length < n; i++) out.push(arr[i]);
+  const count = Math.min(n, arr.length);
+  for (let i = 0; i < count; i++) out.push(arr[(offset + i) % arr.length]);
   return out;
 }
 
@@ -82,8 +86,19 @@ async function main() {
   console.log("🌱 Seeding ACCTIVE Sports database…");
 
   // ---- Admin user ----
-  const email = process.env.ADMIN_EMAIL || "admin@acctivesports.com";
+  // Normalised to lower case: the login route lower-cases the submitted email
+  // before looking it up, so an ADMIN_EMAIL with any capitals would create an
+  // account that could never be signed into.
+  const email = (process.env.ADMIN_EMAIL || "admin@acctivesports.com").toLowerCase().trim();
   const password = process.env.ADMIN_PASSWORD || "acctive@admin123";
+
+  if (process.env.NODE_ENV === "production" && !process.env.ADMIN_PASSWORD) {
+    throw new Error(
+      "[seed] ADMIN_PASSWORD must be set in production — refusing to create an " +
+        "admin account with the publicly documented default password."
+    );
+  }
+
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.adminUser.upsert({
     where: { email },
@@ -114,10 +129,8 @@ async function main() {
       const style = cat.styles[(i - 1) % cat.styles.length];
       const design = String(i).padStart(3, "0");
       const name = `${cat.name.replace(/s$/, "")} — ${style} #${design}`;
-      const sports = pick(
-        [...SPORTS].sort(),
-        2 + (i % 3)
-      ).sort(() => 0); // stable subset
+      // `.sort(() => 0)` here was a no-op that read like a shuffle.
+      const sports = pick(SPORTS, 2 + (i % 3), i);
       products.push({
         name,
         slug: slugify(`${cat.slug}-${style}-${design}`),

@@ -337,6 +337,11 @@ Now open:
 
 ## 📜 Scripts reference
 
+> **Upgrading an existing deployment:** the `Enquiry` table gained
+> `paymentMethod` and `total` columns, and `Product` gained two indexes.
+> Run `npm run db:push` once against your production database after deploying.
+> It is additive — no existing data is touched.
+
 | Command | What it does |
 |---|---|
 | `npm run dev` | Sync DB provider → start dev server (hot reload) |

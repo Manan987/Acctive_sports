@@ -7,8 +7,12 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url.replace(/\/$/, "");
 
-  const staticRoutes = ["", "/catalogue", "/about", "/contact", "/quote"].map((p) => ({
+  // "/quote" was listed here but it is a permanent redirect to /cart — a
+  // sitemap should only contain final, indexable URLs. /cart and /checkout are
+  // deliberately absent (disallowed in robots.txt).
+  const staticRoutes = ["", "/catalogue", "/about", "/contact"].map((p) => ({
     url: `${base}${p}`,
+    lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: p === "" ? 1 : 0.7,
   }));
