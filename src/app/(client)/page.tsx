@@ -13,6 +13,13 @@ import { StatsCounter } from "@/components/client/marketing/StatsCounter";
 import { FAQ } from "@/components/client/marketing/FAQ";
 import { Reveal } from "@/components/client/marketing/Reveal";
 
+// Cloudinary product showcase images
+const SHOWCASE_IMAGES = [
+  { src: "https://res.cloudinary.com/rdhqircc/image/upload/v1786214189/C8CC4672-1768-439B-AB57-3DFE2AA30F68_m32rlh.png", label: "Custom Jerseys" },
+  { src: "https://res.cloudinary.com/rdhqircc/image/upload/v1786214178/61DCE3D1-E9B2-4C85-8A24-B63ED502DF7C_tt7jcl.png", label: "Team Kits" },
+  { src: "https://res.cloudinary.com/rdhqircc/image/upload/v1786214190/CD0579E7-A8FA-4C02-B42B-1C2E8D687D5C_aaswyz.png", label: "Bulk Orders" },
+];
+
 export const dynamic = "force-dynamic";
 
 // The root layout no longer sets a blanket canonical (it was being inherited by
@@ -42,6 +49,38 @@ export default async function HomePage() {
       <HeroCarousel />
       <TrustBadges />
 
+      {/* ── Product showcase image strip ─────────────── */}
+      <section className="container-x py-10 md:py-14">
+        <Reveal className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {SHOWCASE_IMAGES.map((img, i) => (
+            <Link
+              key={i}
+              href="/catalogue"
+              className="group relative overflow-hidden rounded-2xl bg-ink-900"
+              style={{ minHeight: "240px" }}
+            >
+              <Image
+                src={img.src}
+                alt={img.label}
+                fill
+                className="object-cover object-center opacity-80 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
+                sizes="(max-width: 640px) 100vw, 33vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-flame-500 to-electric-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="absolute bottom-4 left-4">
+                <span className="inline-block rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
+                  {img.label}
+                </span>
+              </div>
+              <div className="absolute right-4 top-4 rounded-full border border-white/20 bg-white/10 p-2 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+            </Link>
+          ))}
+        </Reveal>
+      </section>
+
       {/* Shop by Category */}
       <section className="container-x py-16 md:py-20">
         <Reveal className="flex items-end justify-between">
@@ -61,10 +100,10 @@ export default async function HomePage() {
                 className="group relative flex h-56 items-end overflow-hidden rounded-2xl bg-ink-900 p-6 text-white transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-flame-500/20"
               >
                 <Image
-                  src={cat.image || "/placeholder-product.svg"}
+                  src={cat.image || SHOWCASE_IMAGES[i % 3].src}
                   alt=""
                   fill
-                  className="object-cover opacity-30 transition duration-500 group-hover:scale-110 group-hover:opacity-50"
+                  className="object-cover opacity-40 transition duration-500 group-hover:scale-110 group-hover:opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
                 {/* Flame accent on hover */}
@@ -174,8 +213,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats band */}
-      <section className="relative overflow-hidden bg-ink-950 bg-grid py-16 text-white">
+      {/* Stats band — with ambient video background */}
+      <section className="relative overflow-hidden bg-ink-950 py-16 text-white">
+        {/* Video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-20"
+        >
+          <source
+            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214198/gemini_generated_video_D067D85B_tbm8lg.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/70 to-ink-950/90" />
+        <div className="absolute inset-0 bg-grid opacity-20" />
         <div className="absolute -left-20 top-0 h-64 w-64 rounded-full bg-flame-500/20 blur-[110px]" />
         <div className="container-x relative">
           <StatsCounter />
@@ -226,7 +281,7 @@ export default async function HomePage() {
               Ready to kit out your team?
             </h2>
             <p className="mt-4 text-lg text-ink-200">
-              Browse 145+ customizable designs — jerseys, shorts, tracksuits and more.
+              Browse 300+ customizable designs — jerseys, shorts, tracksuits and more.
               Add to cart, pick your size, and we&apos;ll handle the rest.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">

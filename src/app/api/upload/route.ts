@@ -31,6 +31,14 @@ const ALLOWED: { ext: string; mime: string; match: (b: Buffer) => boolean }[] = 
 //   2. Vercel Blob       — set BLOB_READ_WRITE_TOKEN
 //   3. Local disk        — dev / a VPS with a persistent /public/uploads volume
 // All return the same shape: { url }.
+//
+// Cloudinary folders:
+//   "products"            — product images uploaded via the admin ProductForm
+//   "website production" — general site assets (banners, logos, etc.)
+// Pass an optional `folder` field in the FormData to select; defaults to "products".
+
+const CLOUDINARY_FOLDERS = ["products", "website production"] as const;
+type CloudinaryFolder = (typeof CLOUDINARY_FOLDERS)[number];
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -51,6 +59,13 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
   }
+
+  // Resolve target Cloudinary folder — only the two known folders are accepted.
+  const rawFolder = typeof form.get("folder") === "string" ? (form.get("folder") as string).trim() : "";
+  const cloudinaryFolder: CloudinaryFolder =
+    (CLOUDINARY_FOLDERS as readonly string[]).includes(rawFolder)
+      ? (rawFolder as CloudinaryFolder)
+      : "products";
 
   const file = form.get("file");
   if (!(file instanceof File)) {
@@ -99,7 +114,7 @@ export async function POST(req: Request) {
       const { v2: cloudinary } = await import("cloudinary");
       const dataUri = `data:${kind.mime};base64,${bytes.toString("base64")}`;
       const res = await cloudinary.uploader.upload(dataUri, {
-        folder: "acctive/products",
+        folder: cloudinaryFolder,
         public_id: `${safe}-${rand}`,
         resource_type: "image",
       });
@@ -114,7 +129,7 @@ export async function POST(req: Request) {
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
       const { put } = await import("@vercel/blob");
-      const blob = await put(`products/${filename}`, bytes, {
+      const blob = await put(`${cloudinaryFolder}/${filename}`, bytes, {
         access: "public",
         token: process.env.BLOB_READ_WRITE_TOKEN,
         contentType: kind.mime,

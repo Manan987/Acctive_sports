@@ -12,8 +12,10 @@ const csp = [
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://res.cloudinary.com https://*.public.blob.vercel-storage.com https://www.google-analytics.com",
+  // Allow Cloudinary-hosted videos in <video> elements
+  "media-src 'self' https://res.cloudinary.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://res.cloudinary.com",
   // The contact page embeds a Google Maps iframe.
   "frame-src https://maps.google.com https://www.google.com",
   "object-src 'none'",

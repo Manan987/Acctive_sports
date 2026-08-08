@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const MESSAGES = [
   "🎨 Free digital design mockups on every order",
@@ -18,9 +19,36 @@ export function AnnouncementBar() {
   }, []);
 
   return (
-    <div className="bg-ink-950 text-white">
-      <div className="container-x flex h-9 items-center justify-center overflow-hidden text-center text-xs font-medium">
-        <span key={i} className="animate-fade-up">{MESSAGES[i]}</span>
+    <div className="relative overflow-hidden bg-ink-950 text-white">
+      {/* Gradient accent lines */}
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-flame-500/70 to-transparent" />
+
+      <div className="container-x flex h-9 items-center justify-between gap-4 overflow-hidden">
+        {/* Logo thumbnail */}
+        <div className="hidden shrink-0 items-center gap-2 sm:flex">
+          <Image
+            src="https://res.cloudinary.com/rdhqircc/image/upload/v1786219410/4C28E8CC-C4C5-43D0-AAAF-AADEEBF3CA85_xllmdr.png"
+            alt="ACCTIVE Sports"
+            width={60}
+            height={20}
+            className="h-5 w-auto object-contain opacity-80"
+          />
+        </div>
+
+        {/* Rotating message */}
+        <div className="flex flex-1 items-center justify-center text-center text-xs font-medium">
+          <span key={i} className="animate-fade-up">
+            {MESSAGES[i]}
+          </span>
+        </div>
+
+        {/* Right accent */}
+        <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-flame-500 animate-pulse" />
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-400">
+            Live
+          </span>
+        </div>
       </div>
     </div>
   );

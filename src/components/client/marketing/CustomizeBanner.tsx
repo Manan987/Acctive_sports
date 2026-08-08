@@ -1,22 +1,47 @@
+"use client";
+
 import Link from "next/link";
+import { useRef, useEffect } from "react";
 
 const STEPS = [
-  { n: "1", t: "Pick a design", d: "Choose from 145+ styles or send your own artwork.", emoji: "🎨" },
+  { n: "1", t: "Pick a design", d: "Choose from 300+ styles or send your own artwork.", emoji: "🎨" },
   { n: "2", t: "Free mockup", d: "Digital proof with your name, numbers & logo — no charge.", emoji: "✏️" },
   { n: "3", t: "Approve & produce", d: "We manufacture in-house with full quality control.", emoji: "🏭" },
   { n: "4", t: "Delivered to you", d: "Dispatched pan-India from our Meerut unit.", emoji: "🚚" },
 ];
 
 export function CustomizeBanner() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.play().catch(() => {});
+  }, []);
+
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-ink-950 bg-grid px-6 py-12 text-white sm:px-10 md:py-16">
+    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-ink-950 text-white">
+      {/* ── Ambient background video ── */}
+      <video
+        ref={videoRef}
+        src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214194/gemini_generated_video_0452D33C_bxte0z.mp4"
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 h-full w-full object-cover object-center opacity-30"
+      />
+      {/* Dark gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-br from-ink-950/90 via-ink-950/70 to-flame-950/80" />
+      <div className="absolute inset-0 bg-grid opacity-20" />
+
       {/* Glow orbs */}
       <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-flame-500/25 blur-[100px]" />
       <div className="absolute -bottom-20 -left-10 h-72 w-72 rounded-full bg-electric-500/20 blur-[100px]" />
       {/* Gradient top line */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-flame-500/60 to-transparent" />
 
-      <div className="relative">
+      <div className="relative px-6 py-12 sm:px-10 md:py-16">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-flame-500/30 bg-flame-500/10 px-4 py-1.5 text-sm font-bold text-flame-400">
             🎯 Personalize your gear
@@ -37,7 +62,6 @@ export function CustomizeBanner() {
               key={s.n}
               className="group relative rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-flame-500/40 hover:bg-white/10"
             >
-              {/* Connector line */}
               {idx < STEPS.length - 1 && (
                 <div className="absolute -right-2 top-8 hidden h-px w-4 bg-gradient-to-r from-flame-500/50 to-transparent lg:block" />
               )}
