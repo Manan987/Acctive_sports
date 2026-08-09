@@ -19,19 +19,19 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    eyebrow: "🏆 Team Kits · Made to Order",
+    eyebrow: "🏆 India's #1 Custom Sportswear Manufacturer",
     title: (
       <>
-        Custom sportswear that{" "}
-        <span className="gradient-text-animated">performs &amp; pops</span>
+        Wear what champions{" "}
+        <span className="gradient-text-animated">train in</span>
       </>
     ),
     subtitle:
-      "Vibrant sublimated jerseys, shorts, lowers & tracksuits — designed to your brief and manufactured in-house.",
+      "Factory-direct sublimated jerseys, tracksuits & kits — built to your exact colours, logo and numbers. MOQ 50 pcs.",
     ctaHref: "/catalogue",
-    ctaLabel: "Browse Catalogue",
+    ctaLabel: "Browse All Designs",
     altHref: "/contact",
-    altLabel: "Get Free Quote",
+    altLabel: "Get Free Quote →",
     gradient: "from-ink-950/80 via-ink-900/60 to-flame-900/40",
     accentFrom: "from-flame-600",
     accentTo: "to-orange-400",
@@ -39,19 +39,19 @@ const SLIDES: Slide[] = [
       "https://res.cloudinary.com/rdhqircc/video/upload/v1786214198/gemini_generated_video_D067D85B_tbm8lg.mp4",
   },
   {
-    eyebrow: "🎨 Full Sublimation Printing",
+    eyebrow: "🎨 Colours That Never Fade — Guaranteed",
     title: (
       <>
-        Colours that never{" "}
-        <span className="gradient-text-animated">fade or crack</span>
+        Sublimation printing{" "}
+        <span className="gradient-text-animated">that outlasts seasons</span>
       </>
     ),
     subtitle:
-      "Edge-to-edge, professional-grade printing on premium fabrics — Lycra, Superpoly, SAP Mattie & more.",
+      "Edge-to-edge, bleed-proof prints on Lycra, Superpoly & SAP Mattie. Every jersey looks match-day sharp — even after 100 washes.",
     ctaHref: "/catalogue?category=round-neck-t-shirts",
-    ctaLabel: "See Jerseys",
+    ctaLabel: "Shop Jerseys",
     altHref: "/about",
-    altLabel: "Our Process",
+    altLabel: "See How We Make Them",
     gradient: "from-ink-950/80 via-ink-900/60 to-electric-900/40",
     accentFrom: "from-electric-500",
     accentTo: "to-cyan-400",
@@ -59,19 +59,19 @@ const SLIDES: Slide[] = [
       "https://res.cloudinary.com/rdhqircc/video/upload/v1786214195/gemini_generated_video_1A145FD7_k8kfmh.mp4",
   },
   {
-    eyebrow: "🚚 Bulk Orders · Factory Direct",
+    eyebrow: "🚚 Bulk Orders · Delivered Pan-India",
     title: (
       <>
-        Kit out your whole{" "}
-        <span className="gradient-text-animated">team or brand</span>
+        One factory.{" "}
+        <span className="gradient-text-animated">Every kit your team needs.</span>
       </>
     ),
     subtitle:
-      "From academies and clubs to schools and retail labels — factory pricing with pan-India delivery.",
+      "Schools, academies, clubs & brands — we manufacture everything in-house and ship anywhere in India. No middlemen, no markups.",
     ctaHref: "/catalogue",
-    ctaLabel: "Shop Bulk Kits",
+    ctaLabel: "Order in Bulk",
     altHref: "/contact",
-    altLabel: "Talk to Us",
+    altLabel: "WhatsApp Us Now",
     gradient: "from-ink-950/80 via-flame-950/60 to-ink-900/40",
     accentFrom: "from-flame-500",
     accentTo: "to-yellow-400",
@@ -81,10 +81,10 @@ const SLIDES: Slide[] = [
 ];
 
 const STATS = [
-  { value: "300+", label: "Designs" },
-  { value: "8", label: "Sports" },
+  { value: "300+", label: "Unique Designs" },
+  { value: "8", label: "Sports Covered" },
   { value: "10K+", label: "Kits Delivered" },
-  { value: "100%", label: "Customizable" },
+  { value: "50", label: "Min. Order Qty" },
 ];
 
 export function HeroCarousel() {

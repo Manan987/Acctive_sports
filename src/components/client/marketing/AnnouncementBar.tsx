@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const MESSAGES = [
-  "🎨 Free digital design mockups on every order",
-  "🚚 Pan-India delivery from our Meerut factory",
-  "🏭 Factory-direct bulk pricing — no middlemen",
-  "⚡ Vibrant sublimation that never fades",
+  "🎨 Free digital mockup with every order — no commitment needed",
+  "🚚 Factory-direct prices · Delivered across India from Meerut",
+  "🏆 Trusted by 500+ academies, clubs & schools nationwide",
+  "⚡ Sublimation that stays vivid — wash after wash, season after season",
 ];
 
 export function AnnouncementBar() {

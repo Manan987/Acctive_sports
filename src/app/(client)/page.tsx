@@ -29,12 +29,12 @@ export const metadata: Metadata = {
 };
 
 const WHY = [
-  { title: "Vibrant Sublimation", desc: "Edge-to-edge, fade-proof prints that stay bright wash after wash.", icon: "M12 3v18M3 12h18" },
-  { title: "Premium Fabrics", desc: "Lycra, Superpoly, SAP Mattie, TPU & more — breathable and durable.", icon: "M4 7h16M4 12h16M4 17h10" },
-  { title: "Custom Designs", desc: "Your name, numbers, logo and colours — designed to your brief.", icon: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" },
-  { title: "Bulk Orders", desc: "Built for teams, clubs, schools and brands at factory pricing.", icon: "M3 3h18v4H3zM3 10h18v11H3z" },
-  { title: "Pan-India Delivery", desc: "Reliable dispatch from our Meerut unit to anywhere in India.", icon: "M3 12h18M3 12a9 9 0 0 1 18 0M12 3v18" },
-  { title: "Factory Direct", desc: "No middlemen — manufactured in-house for quality and price control.", icon: "M2 20h20L12 4z" },
+  { title: "Vivid, Long-Lasting Sublimation", desc: "Full-bleed, edge-to-edge printing that resists fading, cracking & peeling — even after repeated washing.", icon: "M12 3v18M3 12h18" },
+  { title: "Sports-Grade Fabrics", desc: "Lycra, Superpoly, SAP Mattie, TPU & NS Lycra — breathable, sweat-wicking and built for performance.", icon: "M4 7h16M4 12h16M4 17h10" },
+  { title: "100% Custom Designs", desc: "Your colours, names, numbers, logo and sponsor patches — tailored exactly to your brief, every time.", icon: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" },
+  { title: "Bulk-Ready Manufacturing", desc: "From 50 to 5,000 pieces — we scale without compromising quality. Perfect for teams, clubs and brands.", icon: "M3 3h18v4H3zM3 10h18v11H3z" },
+  { title: "Pan-India Delivery", desc: "Reliable, tracked shipping from our Meerut factory to every state in India — on time, every time.", icon: "M3 12h18M3 12a9 9 0 0 1 18 0M12 3v18" },
+  { title: "Factory-Direct Pricing", desc: "Zero middlemen — you deal directly with us and get the best price without sacrificing quality.", icon: "M2 20h20L12 4z" },
 ];
 
 export default async function HomePage() {
@@ -85,7 +85,7 @@ export default async function HomePage() {
       <section className="container-x py-16 md:py-20">
         <Reveal className="flex items-end justify-between">
           <div>
-            <p className="eyebrow">Our Range</p>
+            <p className="eyebrow">Our Full Range</p>
             <h2 className="section-heading mt-2">Shop by Category</h2>
           </div>
           <Link href="/catalogue" className="hidden text-sm font-semibold text-flame-500 hover:underline sm:block">
@@ -127,8 +127,8 @@ export default async function HomePage() {
           <div className="container-x">
             <Reveal className="flex items-end justify-between">
               <div>
-                <p className="eyebrow">Crowd Pleasers</p>
-                <h2 className="section-heading mt-2">Featured Designs</h2>
+                <p className="eyebrow">Bestsellers</p>
+                <h2 className="section-heading mt-2">Most-Ordered Designs</h2>
               </div>
               <Link href="/catalogue?sort=featured" className="hidden text-sm font-semibold text-flame-500 hover:underline sm:block">
                 See more →
@@ -148,10 +148,10 @@ export default async function HomePage() {
       {/* Shop by Sport */}
       <section className="container-x py-16 md:py-20">
         <Reveal className="text-center">
-          <p className="eyebrow">Built for every game</p>
+          <p className="eyebrow">Sport-Specific Kits</p>
           <h2 className="section-heading mt-2">Shop by Sport</h2>
           <p className="mx-auto mt-2 max-w-xl text-ink-500 dark:text-ink-400">
-            Kits engineered for the demands of each sport.
+            Performance kits engineered for the unique demands of each sport — cut, fabric and fit chosen for the game.
           </p>
         </Reveal>
         <Reveal className="mt-8">
@@ -171,8 +171,8 @@ export default async function HomePage() {
         <section className="container-x pb-16 md:pb-20">
           <Reveal className="flex items-end justify-between">
             <div>
-              <p className="eyebrow">Fresh off the press</p>
-              <h2 className="section-heading mt-2">New on the Shelf</h2>
+              <p className="eyebrow">Just Dropped</p>
+              <h2 className="section-heading mt-2">New Arrivals</h2>
             </div>
             <Link href="/catalogue?sort=newest" className="hidden text-sm font-semibold text-flame-500 hover:underline sm:block">
               View all →
@@ -192,8 +192,8 @@ export default async function HomePage() {
       <section className="border-t border-ink-100 bg-ink-50 py-16 dark:border-ink-800 dark:bg-ink-950/50 md:py-20">
         <div className="container-x">
           <Reveal>
-            <p className="eyebrow">Why ACCTIVE</p>
-            <h2 className="section-heading mt-2">A factory built for quality &amp; scale</h2>
+            <p className="eyebrow">Why Choose ACCTIVE</p>
+            <h2 className="section-heading mt-2">Built in-house. Delivered on time. Every time.</h2>
           </Reveal>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {WHY.map((w, i) => (
@@ -226,8 +226,8 @@ export default async function HomePage() {
       {/* Testimonials */}
       <section className="container-x py-16 md:py-20">
         <Reveal className="text-center">
-          <p className="eyebrow">What buyers say</p>
-          <h2 className="section-heading mt-2">Trusted by teams across India</h2>
+          <p className="eyebrow">Real Customers, Real Results</p>
+          <h2 className="section-heading mt-2">Trusted by teams, academies & brands across India</h2>
         </Reveal>
         <div className="mt-10">
           <Testimonials />
@@ -237,7 +237,7 @@ export default async function HomePage() {
       {/* Partners marquee */}
       <section className="border-y border-ink-100 py-8 dark:border-ink-800">
         <p className="container-x mb-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-ink-400">
-          Manufacturing for
+          Supplying & Manufacturing for
         </p>
         <PartnersMarquee />
       </section>
@@ -245,8 +245,8 @@ export default async function HomePage() {
       {/* FAQ */}
       <section className="container-x pb-4 pt-16 md:pt-20">
         <Reveal className="text-center">
-          <p className="eyebrow">Good to know</p>
-          <h2 className="section-heading mt-2">Frequently asked questions</h2>
+          <p className="eyebrow">Got Questions?</p>
+          <h2 className="section-heading mt-2">Everything you need to know before ordering</h2>
         </Reveal>
         <div className="mt-10">
           <FAQ />
@@ -261,24 +261,24 @@ export default async function HomePage() {
           <div className="absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-electric-500/20 blur-[120px]" />
           <div className="relative mx-auto max-w-2xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm">
-              🏆 Trusted by 500+ teams across India
+              🏆 Trusted by 500+ teams & academies across India
             </span>
             <h2 className="mt-6 font-display text-3xl font-extrabold sm:text-5xl">
-              Ready to kit out your team?
+              Your next kit is one order away.
             </h2>
             <p className="mt-4 text-lg text-ink-200">
-              Browse 300+ customizable designs — jerseys, shorts, tracksuits and more.
-              Add to cart, pick your size, and we&apos;ll handle the rest.
+              Choose from 300+ designs. Get a free mockup first. Pay only when you're happy.
+              We manufacture, pack and deliver — pan-India.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link href="/catalogue" className="btn-lg btn bg-flame-500 text-white shadow-xl shadow-flame-500/40 hover:bg-flame-600 pulse-glow">
-                🛒 Shop Now
+                🛒 Browse All Designs
               </Link>
               <Link href="/contact" className="btn-lg btn border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20">
-                💬 Talk to Us
+                💬 WhatsApp Us
               </Link>
             </div>
-            <p className="mt-6 text-sm text-ink-400">Free mockup · No minimum for first order · Pan-India delivery</p>
+            <p className="mt-6 text-sm text-ink-400">Free mockup on every order &middot; MOQ 50 pcs &middot; Pan-India delivery &middot; No advance for mockup</p>
           </div>
         </Reveal>
       </section>

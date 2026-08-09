@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useRef, useEffect } from "react";
 
 const STEPS = [
-  { n: "1", t: "Pick a design", d: "Choose from 300+ styles or send your own artwork.", emoji: "🎨" },
-  { n: "2", t: "Free mockup", d: "Digital proof with your name, numbers & logo — no charge.", emoji: "✏️" },
-  { n: "3", t: "Approve & produce", d: "We manufacture in-house with full quality control.", emoji: "🏭" },
-  { n: "4", t: "Delivered to you", d: "Dispatched pan-India from our Meerut unit.", emoji: "🚚" },
+  { n: "1", t: "Choose a design", d: "Pick from 300+ styles or upload your own artwork. We'll match it perfectly.", emoji: "🎨" },
+  { n: "2", t: "Free digital mockup", d: "See your exact jersey — name, number & logo placed — before you commit. Zero cost.", emoji: "✏️" },
+  { n: "3", t: "We manufacture", d: "Your kit is made in-house at our Meerut factory with strict QC on every piece.", emoji: "🏥" },
+  { n: "4", t: "Delivered to your door", d: "Packed & dispatched pan-India. Track every shipment, on-time or we call you.", emoji: "🚚" },
 ];
 
 export function CustomizeBanner() {
@@ -35,15 +35,14 @@ export function CustomizeBanner() {
       <div className="relative px-6 py-12 sm:px-10 md:py-16">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-flame-500/30 bg-flame-500/10 px-4 py-1.5 text-sm font-bold text-flame-400">
-            🎯 Personalize your gear
+            🎯 Your Kit, Your Rules
           </span>
           <h2 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">
-            Your team. Your colours.{" "}
-            <span className="gradient-text-animated">Your name on every jersey.</span>
+            Fully custom.{" "}
+            <span className="gradient-text-animated">Ready in days, not weeks.</span>
           </h2>
           <p className="mt-3 text-ink-300">
-            Every ACCTIVE product is fully customizable — send us a brief and we&apos;ll
-            handle the rest, from design to doorstep.
+            Tell us your colours, logo, names and numbers. We design, print and deliver — no back-and-forth, no surprises.
           </p>
         </div>
 
@@ -70,12 +69,13 @@ export function CustomizeBanner() {
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/catalogue" className="btn-primary btn-lg pulse-glow">
-            🛒 Start Shopping
+            🛒 Start Your Order
           </Link>
           <Link href="/contact" className="btn-lg btn border border-white/25 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20">
-            💬 Get Free Quote
+            💬 Get Free Mockup
           </Link>
         </div>
+        <p className="mt-4 text-xs text-ink-500">No payment needed for mockup &middot; Bulk discounts available &middot; MOQ 50 pcs</p>
       </div>
     </div>
   );

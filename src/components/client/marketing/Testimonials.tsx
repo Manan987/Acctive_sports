@@ -12,36 +12,36 @@ const PRODUCT_IMAGES = [
 const REVIEWS = [
   {
     quote:
-      "Ordered 40 cricket jerseys for our academy — the sublimation quality is genuinely professional and the colours are exactly like the mockup. Delivery was on time across state.",
+      "Ordered 60 cricket jerseys for our district academy — the sublimation quality is genuinely professional. Colours matched the mockup exactly, stitching was sharp, and delivery reached Lucknow within 10 days. Will order every season.",
     name: "Rahul Verma",
-    role: "Cricket Academy, Lucknow",
+    role: "Head Coach, District Cricket Academy — Lucknow",
     initials: "RV",
     color: "from-flame-500 to-flame-600",
     imgIndex: 0,
   },
   {
     quote:
-      "We've tried three suppliers; ACCTIVE is the only one that nailed our club crest and gradient kit in one go. Factory pricing made a full-squad order affordable.",
+      "We've tried four suppliers before finding ACCTIVE. They're the only manufacturer who nailed our gradient kit with the exact pantone match and club crest placement in the first sample. Factory pricing made a full-squad order genuinely affordable.",
     name: "Anjali Mehta",
-    role: "Football Club Manager, Delhi",
+    role: "Club Manager, FC United Delhi",
     initials: "AM",
     color: "from-electric-500 to-electric-600",
     imgIndex: 1,
   },
   {
     quote:
-      "Bulk tracksuits for our school annual meet — great fabric, neat stitching, and their design team was patient with our revisions. Will reorder every season.",
+      "Placed a bulk tracksuit order for 120 students for our annual sports meet. Great fabric weight, neat stitching, and their design team handled three revisions without complaint. The delivery was on schedule and packaging was solid.",
     name: "S. Krishnan",
-    role: "Sports Coordinator, Meerut",
+    role: "Sports Director, DPS Meerut",
     initials: "SK",
     color: "from-flame-400 to-electric-500",
     imgIndex: 2,
   },
   {
     quote:
-      "As a growing activewear label we needed a reliable manufacturer. Consistent quality batch after batch, and the MOQ worked for us. Highly recommended.",
+      "As a growing activewear D2C brand, consistency is everything. ACCTIVE has delivered identical quality across four batches now. The MOQ of 50 works perfectly for our product launches and the turnaround is always within 12–15 days.",
     name: "Farhan Sheikh",
-    role: "D2C Activewear Brand",
+    role: "Founder, APEX Activewear (D2C Brand)",
     initials: "FS",
     color: "from-flame-600 to-flame-500",
     imgIndex: 0,
