@@ -53,7 +53,7 @@ export default function AboutPage() {
           className="absolute inset-0 h-full w-full object-cover object-center opacity-40"
         >
           <source
-            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214195/gemini_generated_video_1A145FD7_k8kfmh.mp4"
+            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786295693/gemini_generated_video_26B45789_flyulq.mp4"
             type="video/mp4"
           />
         </video>
@@ -183,20 +183,7 @@ export default function AboutPage() {
 
       {/* ── Video showcase band ──────────────────────────── */}
       <section className="relative overflow-hidden bg-ink-950 py-20 text-white">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-25"
-        >
-          <source
-            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214198/gemini_generated_video_D067D85B_tbm8lg.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/95 via-ink-950/70 to-ink-950/95" />
+
         <div className="absolute inset-0 bg-grid opacity-20" />
         <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-flame-500/20 blur-[120px]" />
 

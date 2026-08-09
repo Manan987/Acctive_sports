@@ -21,16 +21,7 @@ export function CustomizeBanner() {
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-ink-950 text-white">
-      {/* ── Ambient background video ── */}
-      <video
-        ref={videoRef}
-        src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214194/gemini_generated_video_0452D33C_bxte0z.mp4"
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 h-full w-full object-cover object-center opacity-30"
-      />
+
       {/* Dark gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-ink-950/90 via-ink-950/70 to-flame-950/80" />
       <div className="absolute inset-0 bg-grid opacity-20" />

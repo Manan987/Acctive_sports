@@ -25,7 +25,7 @@ export default function ContactPage() {
           className="absolute inset-0 h-full w-full object-cover object-center opacity-30"
         >
           <source
-            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214195/gemini_generated_video_1A145FD7_k8kfmh.mp4"
+            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786295693/gemini_generated_video_AD4F8806_bs8ynq.mp4"
             type="video/mp4"
           />
         </video>

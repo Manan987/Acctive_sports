@@ -37,7 +37,7 @@ export function Footer() {
         <div className="md:col-span-1">
           <Link href="/" aria-label="ACCTIVE Sports — Home">
             <Image
-              src="https://res.cloudinary.com/rdhqircc/image/upload/v1786219410/4C28E8CC-C4C5-43D0-AAAF-AADEEBF3CA85_xllmdr.png"
+              src="https://res.cloudinary.com/rdhqircc/image/upload/v1786295692/IMG_7133_c2lfwu.png"
               alt="ACCTIVE Sports logo"
               width={220}
               height={72}

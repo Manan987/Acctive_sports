@@ -213,22 +213,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats band — with ambient video background */}
+      {/* Stats band */}
       <section className="relative overflow-hidden bg-ink-950 py-16 text-white">
-        {/* Video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-20"
-        >
-          <source
-            src="https://res.cloudinary.com/rdhqircc/video/upload/v1786214198/gemini_generated_video_D067D85B_tbm8lg.mp4"
-            type="video/mp4"
-          />
-        </video>
         <div className="absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/70 to-ink-950/90" />
         <div className="absolute inset-0 bg-grid opacity-20" />
         <div className="absolute -left-20 top-0 h-64 w-64 rounded-full bg-flame-500/20 blur-[110px]" />
