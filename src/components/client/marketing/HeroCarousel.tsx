@@ -87,11 +87,34 @@ const STATS = [
   { value: "50", label: "Min. Order Qty" },
 ];
 
+/** Fisher-Yates shuffle — returns a new shuffled array */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  // shuffleQueue holds the pre-computed random order for upcoming slides
+  const shuffleQueue = useRef<number[]>([]);
+
+  /** Pick next index from the shuffled queue; re-shuffle when empty */
+  const nextShuffled = useCallback((current: number) => {
+    if (shuffleQueue.current.length === 0) {
+      // Re-fill queue with a fresh shuffle, ensuring we don't start on the same slide
+      let q = shuffle(Array.from({ length: SLIDES.length }, (_, i) => i));
+      if (q[0] === current) q = [...q.slice(1), q[0]]; // rotate so we never repeat
+      shuffleQueue.current = q;
+    }
+    return shuffleQueue.current.shift() as number;
+  }, []);
 
   const go = useCallback(
     (i: number) => {
@@ -107,17 +130,18 @@ export function HeroCarousel() {
 
   const start = useCallback(() => {
     if (timer.current) clearInterval(timer.current);
-    timer.current = setInterval(
-      () => setIndex((v) => (v + 1) % SLIDES.length),
-      8000
-    );
-  }, []);
+    timer.current = setInterval(() => {
+      setIndex((current) => nextShuffled(current));
+    }, 7000);
+  }, [nextShuffled]);
 
   const stop = useCallback(() => {
     if (timer.current) clearInterval(timer.current);
   }, []);
 
   useEffect(() => {
+    // Seed the initial shuffle queue on mount
+    shuffleQueue.current = shuffle(Array.from({ length: SLIDES.length }, (_, i) => i + 1).map(i => i % SLIDES.length));
     start();
     return stop;
   }, [start, stop]);
