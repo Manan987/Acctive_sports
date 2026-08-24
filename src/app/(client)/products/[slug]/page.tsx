@@ -7,8 +7,8 @@ import { AddToCart } from "@/components/client/AddToCart";
 import { ProductCard } from "@/components/client/ProductCard";
 import { ProductTabs } from "@/components/client/ProductTabs";
 import { SizeGuide } from "@/components/client/SizeGuide";
-import { formatINR } from "@/lib/utils";
-import { site } from "@/lib/site";
+import { formatINR, applyDiscount } from "@/lib/utils";
+import { site, DISCOUNTS } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -118,18 +118,68 @@ export default async function ProductPage({
             {product.name}
           </h1>
 
-          {/* Price */}
-          {price ? (
-            <div className="mt-4 flex items-baseline gap-2">
-              <span className="font-display text-3xl font-extrabold text-ink-900 dark:text-white">
-                {price}
-              </span>
-              <span className="text-sm text-ink-500 dark:text-ink-400">per piece</span>
-              {product.moq > 1 && (
-                <span className="ml-2 rounded-full bg-flame-500/10 px-3 py-1 text-xs font-semibold text-flame-600 dark:text-flame-400">
-                  Bulk: {product.moq}+ pcs
-                </span>
-              )}
+          {/* Price — discount tiers */}
+          {product.price ? (
+            <div className="mt-5 space-y-3">
+              {/* Section label */}
+              <p className="text-xs font-bold uppercase tracking-widest text-ink-400">
+                Pricing &amp; Discounts
+              </p>
+
+              {/* Single piece */}
+              {(() => {
+                const s = applyDiscount(product.price, DISCOUNTS.single.pct);
+                return (
+                  <div className="flex items-center justify-between rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 dark:border-ink-700 dark:bg-ink-800/50">
+                    <div>
+                      <p className="text-sm font-bold text-ink-900 dark:text-white">1 piece</p>
+                      <p className="text-xs text-ink-500 dark:text-ink-400">Single order</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-ink-400 line-through">{s.original}</p>
+                      <p className="font-display text-2xl font-extrabold text-ink-900 dark:text-white">
+                        {s.sale}
+                        <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+                          -{DISCOUNTS.single.pct}% OFF
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Bulk order */}
+              {(() => {
+                const b = applyDiscount(product.price, DISCOUNTS.bulk.pct);
+                const saved = product.price - (b.amount ?? product.price);
+                return (
+                  <div className="flex items-center justify-between rounded-xl border-2 border-green-400/40 bg-green-50 px-4 py-3 dark:border-green-700/40 dark:bg-green-950/30">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold text-green-700 dark:text-green-400">50+ pieces 🔥</p>
+                        <span className="rounded-full bg-green-600 px-2 py-0.5 text-[10px] font-bold text-white">BEST DEAL</span>
+                      </div>
+                      <p className="text-xs text-green-600/80 dark:text-green-500">Bulk order discount</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-ink-400 line-through">{b.original}</p>
+                      <p className="font-display text-2xl font-extrabold text-green-700 dark:text-green-400">
+                        {b.sale}
+                        <span className="ml-2 rounded-full bg-green-600/15 px-2 py-0.5 text-xs font-bold text-green-700 dark:text-green-400">
+                          -{DISCOUNTS.bulk.pct}% OFF
+                        </span>
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-green-600 dark:text-green-500">
+                        Save {formatINR(saved)} per piece vs MRP
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <p className="text-[11px] text-ink-400 dark:text-ink-500">
+                * Discounts applied automatically. Prices are per piece excluding customization.
+              </p>
             </div>
           ) : (
             <div className="mt-4">

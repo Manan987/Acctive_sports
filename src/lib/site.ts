@@ -42,6 +42,14 @@ export const site = {
   gaId: process.env.NEXT_PUBLIC_GA_ID || "",
 } as const;
 
+// Sitewide discount tiers — used in ProductCard, product page, cart, etc.
+export const DISCOUNTS = {
+  /** Single piece discount — shown on product cards and detail pages */
+  single: { pct: 25, label: "Single piece" },
+  /** Bulk order discount — applies at or above bulkMinQty pieces */
+  bulk: { pct: 50, label: "Bulk order (50+ pcs)", minQty: 50 },
+} as const;
+
 export const fullAddress = `${site.address.line1}, ${site.address.line2}, ${site.address.city}, ${site.address.state} ${site.address.pin}, ${site.address.country}`;
 
 export function whatsappLink(message?: string) {

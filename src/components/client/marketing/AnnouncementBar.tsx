@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const MESSAGES = [
+  "🔥 BULK OFFER: 50% OFF on orders of 50+ pieces — Factory-direct pricing!",
+  "🏷️ SINGLE PIECE: 25% OFF on every product — No minimum order!",
   "🎨 Free digital mockup with every order — no commitment needed",
   "🚚 Factory-direct prices · Delivered across India from Meerut",
   "🏆 Trusted by 500+ academies, clubs & schools nationwide",
-  "⚡ Sublimation that stays vivid — wash after wash, season after season",
 ];
 
 export function AnnouncementBar() {

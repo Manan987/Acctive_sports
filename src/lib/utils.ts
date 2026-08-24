@@ -31,3 +31,21 @@ export function formatINR(amount?: number | null) {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+/**
+ * Apply a percentage discount to a price.
+ * Returns both the discounted amount and pre-formatted strings.
+ */
+export function applyDiscount(
+  price: number | null | undefined,
+  pct: number
+): { original: string | null; sale: string | null; amount: number | null } {
+  if (price == null) return { original: null, sale: null, amount: null };
+  const sale = Math.round(price * (1 - pct / 100));
+  return {
+    original: formatINR(price),
+    sale: formatINR(sale),
+    amount: sale,
+  };
+}
+

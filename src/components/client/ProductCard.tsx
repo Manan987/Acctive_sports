@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProductView } from "@/lib/data";
-import { formatINR } from "@/lib/utils";
+import { applyDiscount } from "@/lib/utils";
+import { DISCOUNTS } from "@/lib/site";
 import { QuickAddToCart } from "./QuickAddToCart";
 
 export function ProductCard({ product }: { product: ProductView }) {
   const img = product.images[0] || "/placeholder-product.svg";
   const imgBack = product.images[1] || img;
-  const price = formatINR(product.price);
+
+  const single = applyDiscount(product.price, DISCOUNTS.single.pct);
+  const bulk   = applyDiscount(product.price, DISCOUNTS.bulk.pct);
 
   return (
     <div className="group card card-hover relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-flame-500/15">
@@ -49,7 +52,14 @@ export function ProductCard({ product }: { product: ProductView }) {
                 ✨ New
               </span>
             )}
+            {/* Bulk discount badge */}
+            {product.price && (
+              <span className="rounded-full bg-green-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg">
+                Bulk {DISCOUNTS.bulk.pct}% OFF
+              </span>
+            )}
           </div>
+
           <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold text-ink-700 backdrop-blur dark:bg-ink-900/90 dark:text-ink-200">
             Customizable
           </span>
@@ -73,24 +83,42 @@ export function ProductCard({ product }: { product: ProductView }) {
           </h3>
         </Link>
 
-        {/* Price row */}
-        <div className="mt-2 flex items-center justify-between">
-          {price ? (
-            <div>
-              <span className="text-base font-extrabold text-ink-900 dark:text-white">{price}</span>
-              <span className="ml-1.5 text-[10px] text-ink-400">/ piece</span>
+        {/* Price block */}
+        {product.price ? (
+          <div className="mt-3 space-y-1.5">
+            {/* Single piece row */}
+            <div className="flex items-center justify-between rounded-lg border border-ink-100 bg-ink-50 px-3 py-1.5 dark:border-ink-700 dark:bg-ink-800/50">
+              <span className="text-[11px] text-ink-500 dark:text-ink-400">1 piece</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-ink-400 line-through">{single.original}</span>
+                <span className="text-sm font-extrabold text-ink-900 dark:text-white">{single.sale}</span>
+                <span className="rounded bg-amber-500/15 px-1 py-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-400">
+                  -{DISCOUNTS.single.pct}%
+                </span>
+              </div>
             </div>
-          ) : (
+
+            {/* Bulk row */}
+            <div className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 dark:border-green-900/40 dark:bg-green-950/30">
+              <span className="text-[11px] font-medium text-green-700 dark:text-green-400">
+                50+ pcs 🔥
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-ink-400 line-through">{bulk.original}</span>
+                <span className="text-sm font-extrabold text-green-700 dark:text-green-400">{bulk.sale}</span>
+                <span className="rounded bg-green-600/15 px-1 py-0.5 text-[9px] font-bold text-green-700 dark:text-green-400">
+                  -{DISCOUNTS.bulk.pct}%
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-2">
             <span className="inline-flex items-center gap-1 rounded-full bg-flame-500/10 px-2.5 py-1 text-xs font-bold text-flame-600 dark:text-flame-400">
               💬 Price on request
             </span>
-          )}
-          {product.moq > 0 && (
-            <span className="text-[10px] font-medium text-ink-400">
-              MOQ: {product.moq}
-            </span>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Sizes preview */}
         {product.sizes.length > 0 && (
