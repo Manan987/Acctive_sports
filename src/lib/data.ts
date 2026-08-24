@@ -17,6 +17,7 @@ export type ProductView = {
   categoryId: string;
   categoryName: string;
   categorySlug: string;
+  createdAt: string | null;
 };
 
 function toView(p: any): ProductView {
@@ -35,6 +36,7 @@ function toView(p: any): ProductView {
     categoryId: p.categoryId,
     categoryName: p.category?.name ?? "",
     categorySlug: p.category?.slug ?? "",
+    createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : null,
   };
 }
 

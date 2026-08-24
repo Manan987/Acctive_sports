@@ -37,7 +37,7 @@ export function Footer() {
         <div className="md:col-span-1">
           <Link href="/" aria-label="ACCTIVE Sports — Home">
             <Image
-              src="https://res.cloudinary.com/rdhqircc/image/upload/v1786295692/IMG_7133_c2lfwu.png"
+              src="https://res.cloudinary.com/rdhqircc/image/upload/v1787571541/WhatsApp_Image_2026-08-24_at_4.48.59_PM-removebg-preview_gabj92.png"
               alt="ACCTIVE Sports logo"
               width={220}
               height={72}
@@ -139,6 +139,25 @@ export function Footer() {
         </div>
       </div>
 
+      {/* ── Trust Badges ── */}
+      <div className="border-t border-ink-800">
+        <div className="container-x flex flex-wrap items-center justify-center gap-6 py-5">
+          {[
+            { icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", label: "Verified Manufacturer" },
+            { icon: "M3 21V3h18v18H3zm3-3h12V6H6v12z", label: "Made in India 🇮🇳" },
+            { icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4", label: "Factory Direct" },
+            { icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z", label: "20+ Years" },
+          ].map((badge) => (
+            <div key={badge.label} className="flex items-center gap-2 text-ink-500">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-flame-500/60">
+                <path d={badge.icon} />
+              </svg>
+              <span className="text-xs font-medium">{badge.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── Bottom bar ── */}
       <div className="border-t border-ink-800">
         <div className="container-x flex flex-col items-center justify-between gap-2 py-5 text-xs text-ink-500 sm:flex-row">
@@ -146,6 +165,12 @@ export function Footer() {
           <p className="flex items-center gap-1.5">
             Made with ❤️ in Meerut, India 🇮🇳
           </p>
+          <a
+            href="#"
+            className="hidden items-center gap-1 transition hover:text-flame-400 sm:flex"
+          >
+            Back to top ↑
+          </a>
         </div>
       </div>
     </footer>

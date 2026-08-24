@@ -27,7 +27,7 @@ export function AnnouncementBar() {
         {/* Logo thumbnail */}
         <div className="hidden shrink-0 items-center gap-2 sm:flex">
           <Image
-            src="https://res.cloudinary.com/rdhqircc/image/upload/v1786295692/IMG_7133_c2lfwu.png"
+            src="https://res.cloudinary.com/rdhqircc/image/upload/v1787571541/WhatsApp_Image_2026-08-24_at_4.48.59_PM-removebg-preview_gabj92.png"
             alt="ACCTIVE Sports"
             width={60}
             height={20}

@@ -58,7 +58,7 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
               : "bg-white/10 p-1 backdrop-blur-sm ring-1 ring-white/20"
           }`}>
             <Image
-              src="https://res.cloudinary.com/rdhqircc/image/upload/v1786295692/IMG_7133_c2lfwu.png"
+              src="https://res.cloudinary.com/rdhqircc/image/upload/v1787571541/WhatsApp_Image_2026-08-24_at_4.48.59_PM-removebg-preview_gabj92.png"
               alt="ACCTIVE Sports"
               width={220}
               height={72}

@@ -11,6 +11,7 @@ import { Testimonials } from "@/components/client/marketing/Testimonials";
 import { PartnersMarquee } from "@/components/client/marketing/PartnersMarquee";
 import { StatsCounter } from "@/components/client/marketing/StatsCounter";
 import { FAQ } from "@/components/client/marketing/FAQ";
+import { NewsletterBanner } from "@/components/client/marketing/NewsletterBanner";
 import { Reveal } from "@/components/client/marketing/Reveal";
 
 // Cloudinary product showcase images
@@ -251,6 +252,13 @@ export default async function HomePage() {
         <div className="mt-10">
           <FAQ />
         </div>
+      </section>
+
+      {/* Newsletter banner */}
+      <section className="container-x pb-4 pt-10">
+        <Reveal>
+          <NewsletterBanner />
+        </Reveal>
       </section>
 
       {/* Final CTA */}

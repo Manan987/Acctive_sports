@@ -44,6 +44,11 @@ export function ProductCard({ product }: { product: ProductView }) {
                 ⭐ Featured
               </span>
             )}
+            {product.createdAt && (Date.now() - new Date(product.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000 && (
+              <span className="rounded-full bg-electric-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg shadow-electric-500/40">
+                ✨ New
+              </span>
+            )}
           </div>
           <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold text-ink-700 backdrop-blur dark:bg-ink-900/90 dark:text-ink-200">
             Customizable
