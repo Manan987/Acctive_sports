@@ -101,7 +101,7 @@ export function ProductCard({ product }: { product: ProductView }) {
             {/* Bulk row */}
             <div className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 dark:border-green-900/40 dark:bg-green-950/30">
               <span className="text-[11px] font-medium text-green-700 dark:text-green-400">
-                50+ pcs 🔥
+                5+ pcs 🔥
               </span>
               <div className="flex items-center gap-1.5">
                 <span className="text-[11px] text-ink-400 line-through">{bulk.original}</span>

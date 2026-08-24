@@ -156,10 +156,10 @@ export default async function ProductPage({
                   <div className="flex items-center justify-between rounded-xl border-2 border-green-400/40 bg-green-50 px-4 py-3 dark:border-green-700/40 dark:bg-green-950/30">
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-bold text-green-700 dark:text-green-400">50+ pieces 🔥</p>
+                        <p className="text-sm font-bold text-green-700 dark:text-green-400">5+ pieces 🔥</p>
                         <span className="rounded-full bg-green-600 px-2 py-0.5 text-[10px] font-bold text-white">BEST DEAL</span>
                       </div>
-                      <p className="text-xs text-green-600/80 dark:text-green-500">Bulk order discount</p>
+                      <p className="text-xs text-green-600/80 dark:text-green-500">Bulk order (5+ pieces) discount</p>
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-ink-400 line-through">{b.original}</p>

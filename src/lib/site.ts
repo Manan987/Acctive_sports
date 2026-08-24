@@ -47,7 +47,7 @@ export const DISCOUNTS = {
   /** Single piece discount — shown on product cards and detail pages */
   single: { pct: 25, label: "Single piece" },
   /** Bulk order discount — applies at or above bulkMinQty pieces */
-  bulk: { pct: 50, label: "Bulk order (50+ pcs)", minQty: 50 },
+  bulk: { pct: 50, label: "Bulk order (5+ pcs)", minQty: 5 },
 } as const;
 
 export const fullAddress = `${site.address.line1}, ${site.address.line2}, ${site.address.city}, ${site.address.state} ${site.address.pin}, ${site.address.country}`;

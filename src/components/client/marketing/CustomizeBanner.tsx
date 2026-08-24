@@ -75,7 +75,7 @@ export function CustomizeBanner() {
             💬 Get Free Mockup
           </Link>
         </div>
-        <p className="mt-4 text-xs text-ink-500">🏷️ 25% off single piece &middot; 🔥 50% off bulk (50+ pcs) &middot; No payment for mockup</p>
+        <p className="mt-4 text-xs text-ink-500">🏷️ 25% off single piece &middot; 🔥 50% off bulk (5+ pcs) &middot; No payment for mockup</p>
       </div>
     </div>
   );

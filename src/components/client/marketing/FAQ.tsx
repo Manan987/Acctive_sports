@@ -5,11 +5,11 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "What discounts do you offer?",
-    a: "We offer 25% off on single piece orders and a massive 50% off on bulk orders of 50+ pieces. Discounts are automatically applied — no coupon needed. The bulk discount is our factory-direct pricing passed straight to you.",
+    a: "We offer 25% off on single piece orders and a massive 50% off on bulk orders of 5+ pieces. Discounts are automatically applied — no coupon needed. The bulk discount is our factory-direct pricing passed straight to you.",
   },
   {
     q: "What is your minimum order quantity (MOQ)?",
-    a: "You can order as little as 1 piece — and still get 25% off! For bulk team orders (50+ pieces) you unlock 50% off with factory pricing. Add to cart and the discount is applied automatically.",
+    a: "You can order as little as 1 piece — and still get 25% off! For bulk team orders (5+ pieces) you unlock 50% off with factory pricing. Add to cart and the discount is applied automatically.",
   },
   {
     q: "Can I get my team name, numbers and logo printed?",
