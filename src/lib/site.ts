@@ -62,7 +62,7 @@ export const FABRICS = [
   "Elite Knit",
 ] as const;
 
-export const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL"] as const;
+export const SIZES = ["S", "M", "L", "XL", "XXL"] as const;
 
 export const SPORTS = [
   "Cricket",
