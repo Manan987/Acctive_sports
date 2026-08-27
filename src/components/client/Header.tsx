@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useCart } from "@/context/CartContext";
 import { SPORTS } from "@/lib/site";
+import { Icon } from "@/components/ui/Icon";
 
 type Cat = { name: string; slug: string; count: number };
 
@@ -88,9 +89,12 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
               aria-expanded={mega}
             >
               Shop
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition ${mega ? "rotate-180" : ""}`}>
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+              <Icon
+                name="chevronDown"
+                size={14}
+                strokeWidth={2.4}
+                className={`transition-transform duration-200 ${mega ? "rotate-180" : ""}`}
+              />
             </Link>
 
             {mega && (
@@ -125,7 +129,8 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
                       ))}
                     </div>
                     <Link href="/catalogue" className="btn-primary mt-5 w-full text-sm">
-                      View All Products →
+                      View all products
+                      <Icon name="arrowRight" size={15} />
                     </Link>
                   </div>
                 </div>
@@ -151,12 +156,9 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
             }`}
             aria-label={`Cart (${totalItems} items)`}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
-            </svg>
+            <Icon name="cart" size={20} />
             {totalItems > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-flame-500 px-1 text-[10px] font-bold text-white">
+              <span className="nums absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-flame-500 px-1 text-[10px] font-bold text-white">
                 {totalItems > 9 ? "9+" : totalItems}
               </span>
             )}
@@ -180,11 +182,10 @@ export function Header({ categories = [] }: { categories?: Cat[] }) {
               scrolled || mega ? "text-ink-700 dark:text-ink-200" : "text-white/80"
             }`}
             onClick={() => setOpen((o) => !o)}
-            aria-label="Toggle menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              {open ? <path d="M18 6 6 18M6 6l12 12" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-            </svg>
+            <Icon name={open ? "close" : "menu"} size={22} strokeWidth={2} />
           </button>
         </div>
       </div>

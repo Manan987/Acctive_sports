@@ -362,7 +362,7 @@ async function main() {
         fabrics: JSON.stringify(pick(FABRICS, 3 + (i % 3))),
         sizes: JSON.stringify(SIZES),
         sports: JSON.stringify(sports),
-        moq: 50,
+        moq: 1,
         featured: i <= 2,
         published: true,
         categoryId: category.id,

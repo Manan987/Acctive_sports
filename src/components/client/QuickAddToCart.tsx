@@ -83,7 +83,7 @@ export function QuickAddToCart(props: Props) {
             : "bg-ink-900 text-white hover:bg-flame-500 hover:shadow-lg hover:shadow-flame-500/25 dark:bg-white dark:text-ink-900 dark:hover:bg-flame-500 dark:hover:text-white"
         }`}
       >
-        {added ? "✓ Added!" : picking ? "✕ Cancel" : "Add to Cart"}
+        {added ? "Added to cart" : picking ? "Cancel" : "Add to cart"}
       </button>
     </div>
   );

@@ -34,3 +34,16 @@ services:
         sync: false # cloudinary://key:secret@cloud-name (for image uploads)
       - key: NEXT_PUBLIC_GA_ID
         sync: false
+      # Payment details shown on the order-confirmation screen. Leave any of
+      # these unset and the checkout simply doesn't display that method's
+      # details — it never shows a placeholder account number.
+      - key: NEXT_PUBLIC_UPI_ID
+        sync: false
+      - key: NEXT_PUBLIC_BANK_ACCOUNT_NAME
+        sync: false
+      - key: NEXT_PUBLIC_BANK_ACCOUNT_NUMBER
+        sync: false
+      - key: NEXT_PUBLIC_BANK_IFSC
+        sync: false
+      - key: NEXT_PUBLIC_BANK_NAME
+        sync: false

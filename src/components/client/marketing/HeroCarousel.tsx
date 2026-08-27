@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { STATS as SITE_STATS, ORDER } from "@/lib/site";
+import { Icon, type IconName } from "@/components/ui/Icon";
 
 type Slide = {
   eyebrow: string;
+  eyebrowIcon: IconName;
   title: React.ReactNode;
   subtitle: string;
   ctaHref: string;
@@ -19,60 +22,60 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    eyebrow: "🏆 India's #1 Custom Sportswear Manufacturer",
+    eyebrow: "Custom sportswear, manufactured in Meerut",
+    eyebrowIcon: "factory",
     title: (
       <>
-        Wear what champions{" "}
-        <span className="gradient-text-animated">train in</span>
+        Wear what champions <span className="text-flame-500">train in</span>
       </>
     ),
     subtitle:
-      "Factory-direct sublimated jerseys, tracksuits & kits — built to your exact colours, logo and numbers. MOQ 50 pcs.",
+      "Factory-direct sublimated jerseys, tracksuits and kits — built to your exact colours, logo and numbers. Order from a single piece.",
     ctaHref: "/catalogue",
-    ctaLabel: "Browse All Designs",
+    ctaLabel: "Browse all designs",
     altHref: "/contact",
-    altLabel: "Get Free Quote →",
-    gradient: "from-ink-950/80 via-ink-900/60 to-flame-900/40",
+    altLabel: "Get a free quote",
+    gradient: "from-ink-950/85 via-ink-950/65 to-flame-950/50",
     accentFrom: "from-flame-600",
     accentTo: "to-orange-400",
     video:
       "https://res.cloudinary.com/rdhqircc/video/upload/v1786214198/gemini_generated_video_D067D85B_tbm8lg.mp4",
   },
   {
-    eyebrow: "🎨 Colours That Never Fade — Guaranteed",
+    eyebrow: "Sublimation that survives the season",
+    eyebrowIcon: "palette",
     title: (
       <>
-        Sublimation printing{" "}
-        <span className="gradient-text-animated">that outlasts seasons</span>
+        Colours that <span className="text-flame-500">don&apos;t fade out</span>
       </>
     ),
     subtitle:
-      "Edge-to-edge, bleed-proof prints on Lycra, Superpoly & SAP Mattie. Every jersey looks match-day sharp — even after 100 washes.",
+      "Edge-to-edge, bleed-proof prints on Lycra, Superpoly and SAP Mattie. Match-day sharp wash after wash — the ink is in the fabric, not on it.",
     ctaHref: "/catalogue?category=round-neck-t-shirts",
-    ctaLabel: "Shop Jerseys",
+    ctaLabel: "Shop jerseys",
     altHref: "/about",
-    altLabel: "See How We Make Them",
-    gradient: "from-ink-950/80 via-ink-900/60 to-electric-900/40",
+    altLabel: "See how we make them",
+    gradient: "from-ink-950/85 via-ink-950/65 to-electric-950/50",
     accentFrom: "from-electric-500",
     accentTo: "to-cyan-400",
     video:
       "https://res.cloudinary.com/rdhqircc/video/upload/v1786214195/gemini_generated_video_1A145FD7_k8kfmh.mp4",
   },
   {
-    eyebrow: "🚚 Bulk Orders · Delivered Pan-India",
+    eyebrow: "Bulk orders, delivered pan-India",
+    eyebrowIcon: "truck",
     title: (
       <>
-        One factory.{" "}
-        <span className="gradient-text-animated">Every kit your team needs.</span>
+        One factory. <span className="text-flame-500">Every kit your team needs.</span>
       </>
     ),
     subtitle:
-      "Schools, academies, clubs & brands — we manufacture everything in-house and ship anywhere in India. No middlemen, no markups.",
+      "Schools, academies, clubs and brands — everything is manufactured in-house and shipped anywhere in India. No middlemen, no markups.",
     ctaHref: "/catalogue",
-    ctaLabel: "Order in Bulk",
+    ctaLabel: "Order in bulk",
     altHref: "/contact",
-    altLabel: "WhatsApp Us Now",
-    gradient: "from-ink-950/80 via-flame-950/60 to-ink-900/40",
+    altLabel: "Talk to our team",
+    gradient: "from-ink-950/85 via-flame-950/55 to-ink-950/60",
     accentFrom: "from-flame-500",
     accentTo: "to-yellow-400",
     video:
@@ -80,11 +83,11 @@ const SLIDES: Slide[] = [
   },
 ];
 
-const STATS = [
-  { value: "300+", label: "Unique Designs" },
-  { value: "8", label: "Sports Covered" },
-  { value: "10K+", label: "Kits Delivered" },
-  { value: "50", label: "Min. Order Qty" },
+const HERO_STATS = [
+  { value: SITE_STATS.designs, label: "Designs" },
+  { value: SITE_STATS.sportsCovered, label: "Sports covered" },
+  { value: SITE_STATS.kitsDelivered, label: "Kits delivered" },
+  { value: `${ORDER.minQty} pc`, label: "Minimum order" },
 ];
 
 /** Fisher-Yates shuffle — returns a new shuffled array */
@@ -99,6 +102,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -139,6 +143,17 @@ export function HeroCarousel() {
     if (timer.current) clearInterval(timer.current);
   }, []);
 
+  // `paused` is the explicit user choice and outranks hover: leaving the hero
+  // with the mouse must not silently restart a slideshow someone stopped.
+  const pause = useCallback(() => {
+    setPaused(true);
+    stop();
+  }, [stop]);
+  const resume = useCallback(() => {
+    setPaused(false);
+    start();
+  }, [start]);
+
   useEffect(() => {
     // Seed the initial shuffle queue on mount
     shuffleQueue.current = shuffle(Array.from({ length: SLIDES.length }, (_, i) => i + 1).map(i => i % SLIDES.length));
@@ -165,7 +180,7 @@ export function HeroCarousel() {
     <section
       className="relative overflow-hidden bg-ink-950 text-white"
       onMouseEnter={stop}
-      onMouseLeave={start}
+      onMouseLeave={() => { if (!paused) start(); }}
       aria-roledescription="carousel"
       aria-label="Hero slideshow"
     >
@@ -224,12 +239,15 @@ export function HeroCarousel() {
             <div className="container-x relative flex min-h-[620px] flex-col justify-center py-20 md:min-h-[700px] md:py-28">
               <div className="max-w-2xl">
                 {/* Eyebrow pill */}
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur-md">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
+                  <span className="text-flame-500">
+                    <Icon name={s.eyebrowIcon} size={14} />
+                  </span>
                   {s.eyebrow}
                 </span>
 
                 {/* Headline */}
-                <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight drop-shadow-2xl sm:text-5xl lg:text-[3.75rem]">
+                <h1 className="mt-6 text-4xl font-extrabold leading-[1.08] drop-shadow-2xl sm:text-5xl lg:text-[3.5rem]">
                   {s.title}
                 </h1>
 
@@ -238,38 +256,32 @@ export function HeroCarousel() {
                   {s.subtitle}
                 </p>
 
-                {/* CTAs */}
+                {/* CTAs — one primary, one secondary. Both used to compete: the
+                    primary pulsed continuously and both carried heavy shadows. */}
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
-                    href={s.ctaHref}
-                    className="btn-primary btn-lg pulse-glow group relative overflow-hidden shadow-xl shadow-flame-500/30"
-                  >
-                    <span className="relative z-10">{s.ctaLabel}</span>
-                    <span className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-300 group-hover:translate-x-0" />
+                  <Link href={s.ctaHref} className="btn-primary btn-lg">
+                    {s.ctaLabel}
+                    <Icon name="arrowRight" size={17} />
                   </Link>
-                  <Link
-                    href={s.altHref}
-                    className="btn-lg btn border border-white/30 bg-white/10 text-white shadow-lg backdrop-blur-sm hover:bg-white/20"
-                  >
+                  <Link href={s.altHref} className="btn-on-dark btn-lg">
                     {s.altLabel}
                   </Link>
                 </div>
 
                 {/* Mini stats strip */}
-                <div className="mt-12 flex flex-wrap gap-6">
-                  {STATS.map((st) => (
-                    <div key={st.label} className="text-left">
-                      <div
-                        className={`bg-gradient-to-r ${s.accentFrom} ${s.accentTo} bg-clip-text font-display text-2xl font-extrabold text-transparent drop-shadow`}
-                      >
+                <dl className="mt-12 flex flex-wrap gap-x-10 gap-y-5">
+                  {HERO_STATS.map((st) => (
+                    <div key={st.label}>
+                      <dt className="sr-only">{st.label}</dt>
+                      <dd className="nums text-2xl font-extrabold text-white drop-shadow">
                         {st.value}
-                      </div>
-                      <div className="mt-0.5 text-[11px] uppercase tracking-widest text-ink-300">
+                      </dd>
+                      <p aria-hidden className="mt-0.5 text-[11px] uppercase tracking-widest text-ink-300">
                         {st.label}
-                      </div>
+                      </p>
                     </div>
                   ))}
-                </div>
+                </dl>
               </div>
             </div>
           </div>
@@ -294,65 +306,48 @@ export function HeroCarousel() {
           ))}
         </div>
 
-        {/* Slide counter + arrows */}
+        {/* Slide counter + controls */}
         <div className="flex items-center gap-3">
-          <span className="font-display text-sm tabular-nums text-ink-300">
+          <span className="nums text-sm text-ink-300">
             {String(index + 1).padStart(2, "0")}{" "}
             <span className="text-ink-500">/</span>{" "}
             {String(SLIDES.length).padStart(2, "0")}
           </span>
           <div className="flex gap-1.5">
+            {/* An auto-advancing carousel needs a way to stop it. Hover-to-pause
+                is not reachable by keyboard or touch, so this is the control
+                that actually satisfies WCAG 2.2.2 (pause, stop, hide). */}
+            <button
+              onClick={() => (paused ? resume() : pause())}
+              aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white transition hover:border-flame-500 hover:bg-flame-500/20"
+            >
+              {paused ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M6 4l14 8-14 8z" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M7 4h4v16H7zM13 4h4v16h-4z" />
+                </svg>
+              )}
+            </button>
             <button
               onClick={() => go(index - 1)}
               aria-label="Previous slide"
               className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white transition hover:border-flame-500 hover:bg-flame-500/20"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              >
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
+              <Icon name="chevronLeft" size={16} strokeWidth={2.2} />
             </button>
             <button
               onClick={() => go(index + 1)}
               aria-label="Next slide"
               className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white transition hover:border-flame-500 hover:bg-flame-500/20"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              >
-                <path d="M9 18l6-6-6-6" />
-              </svg>
+              <Icon name="chevronRight" size={16} strokeWidth={2.2} />
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Scroll-hint chevron */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
       </div>
     </section>
   );

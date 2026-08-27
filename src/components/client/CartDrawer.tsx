@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { formatINR } from "@/lib/utils";
+import { cartTotals, unitPrice } from "@/lib/pricing";
+import { DISCOUNTS } from "@/lib/site";
+import { Icon } from "@/components/ui/Icon";
 
 export function CartDrawer() {
   const { items, totalItems, totalPieces, drawerOpen, closeDrawer, update, remove } = useCart();
@@ -44,8 +47,7 @@ export function CartDrawer() {
     }
   }, [drawerOpen]);
 
-  const hasPrice = items.some((i) => i.price != null);
-  const subtotal = items.reduce((s, i) => s + (i.price ?? 0) * i.qty, 0);
+  const totals = cartTotals(items);
 
   return (
     <>
@@ -80,18 +82,18 @@ export function CartDrawer() {
             className="grid h-9 w-9 place-items-center rounded-full text-ink-500 hover:bg-ink-100 dark:hover:bg-ink-800 transition"
             aria-label="Close cart"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
+            <Icon name="close" size={18} strokeWidth={2.2} />
           </button>
         </div>
 
         {/* Empty state */}
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
-            <div className="grid h-24 w-24 place-items-center rounded-full bg-ink-100 dark:bg-ink-800 text-5xl">🛒</div>
+            <div className="grid h-20 w-20 place-items-center rounded-full bg-ink-100 text-ink-400 dark:bg-ink-800">
+              <Icon name="cart" size={32} />
+            </div>
             <div>
-              <p className="font-display text-lg font-bold text-ink-800 dark:text-ink-100">Your cart is empty</p>
+              <p className="text-lg font-bold text-ink-800 dark:text-ink-100">Your cart is empty</p>
               <p className="mt-1 text-sm text-ink-500">Add products to get started.</p>
             </div>
             <button
@@ -104,8 +106,10 @@ export function CartDrawer() {
         ) : (
           <>
             {/* Items list */}
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-              {items.map((item) => (
+            <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
+              {items.map((item) => {
+                const unit = unitPrice(item.price, totalPieces);
+                return (
                 <div key={item.cartKey} className="flex gap-4 rounded-2xl border border-ink-100 bg-ink-50/50 p-3 dark:border-ink-800 dark:bg-ink-800/30">
                   <Link
                     href={`/products/${item.slug}`}
@@ -125,12 +129,10 @@ export function CartDrawer() {
                       </Link>
                       <button
                         onClick={() => remove(item.cartKey)}
-                        className="shrink-0 text-ink-400 hover:text-red-500 transition"
+                        className="shrink-0 text-ink-400 transition hover:text-red-500"
                         aria-label={`Remove ${item.name}`}
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                          <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
+                        <Icon name="close" size={14} strokeWidth={2.2} />
                       </button>
                     </div>
 
@@ -155,54 +157,81 @@ export function CartDrawer() {
                           type="button"
                           onClick={() => { if (item.qty > 1) update(item.cartKey, { qty: item.qty - 1 }); }}
                           disabled={item.qty <= 1}
-                          className="grid h-7 w-7 place-items-center text-ink-600 hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-700 transition text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed"
+                          className="grid h-7 w-7 place-items-center text-ink-600 transition hover:bg-ink-100 disabled:cursor-not-allowed disabled:opacity-30 dark:text-ink-300 dark:hover:bg-ink-700"
                           aria-label="Decrease"
-                        >−</button>
-                        <span className="w-8 border-x border-ink-200 text-center text-sm font-bold dark:border-ink-700">{item.qty}</span>
+                        >
+                          <Icon name="minus" size={13} strokeWidth={2.2} />
+                        </button>
+                        <span className="nums w-8 border-x border-ink-200 text-center text-sm font-bold dark:border-ink-700">{item.qty}</span>
                         <button
                           type="button"
                           onClick={() => update(item.cartKey, { qty: item.qty + 1 })}
-                          className="grid h-7 w-7 place-items-center text-ink-600 hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-700 transition text-sm font-bold"
+                          className="grid h-7 w-7 place-items-center text-ink-600 transition hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-700"
                           aria-label="Increase"
-                        >+</button>
+                        >
+                          <Icon name="plus" size={13} strokeWidth={2.2} />
+                        </button>
                       </div>
-                      {item.price != null ? (
-                        <span className="text-sm font-bold text-ink-900 dark:text-white">
-                          {formatINR(item.price * item.qty)}
-                        </span>
+                      {item.price != null && unit != null ? (
+                        <div className="text-right">
+                          <span className="nums text-sm font-bold text-ink-900 dark:text-white">
+                            {formatINR(unit * item.qty)}
+                          </span>
+                          <p className="nums text-[10px] text-ink-400 line-through">
+                            {formatINR(item.price * item.qty)}
+                          </p>
+                        </div>
                       ) : (
                         <span className="text-xs font-semibold text-flame-500">Price on request</span>
                       )}
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Footer */}
-            <div className="border-t border-ink-100 px-5 py-5 dark:border-ink-800 space-y-3">
-              {hasPrice && (
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-ink-500 dark:text-ink-400">Subtotal ({totalPieces} pcs)</span>
-                  <span className="font-bold text-ink-900 dark:text-white">{formatINR(subtotal)}</span>
-                </div>
+            <div className="space-y-3 border-t border-ink-100 px-5 py-5 dark:border-ink-800">
+              {totals.hasPrice && (
+                <>
+                  {totals.tier === "single" && (
+                    <p className="rounded-lg bg-green-50 px-3 py-2 text-[11px] leading-snug text-green-800 dark:bg-green-950/30 dark:text-green-300">
+                      Add <span className="font-semibold">{totals.piecesToBulk} more</span> to reach{" "}
+                      {DISCOUNTS.bulk.minQty} pieces and save {DISCOUNTS.bulk.pct}%.
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between text-xs text-green-600 dark:text-green-400">
+                    <span>{totals.label} &minus;{totals.pct}%</span>
+                    <span className="nums font-semibold">&minus;{formatINR(totals.savings)}</span>
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="nums text-sm text-ink-500 dark:text-ink-400">
+                      Total ({totalPieces} pcs)
+                    </span>
+                    <span className="nums text-lg font-extrabold text-ink-900 dark:text-white">
+                      {formatINR(totals.subtotal)}
+                    </span>
+                  </div>
+                </>
               )}
               <p className="text-[11px] text-ink-400">
-                Shipping &amp; custom pricing confirmed at checkout.
+                Shipping and customization charges are confirmed at checkout.
               </p>
               <Link
                 href="/checkout"
                 onClick={closeDrawer}
                 className="btn-primary w-full justify-center py-3 text-base font-bold"
               >
-                Checkout →
+                Checkout
+                <Icon name="arrowRight" size={16} />
               </Link>
               <Link
                 href="/cart"
                 onClick={closeDrawer}
                 className="btn-secondary w-full justify-center text-sm"
               >
-                View Full Cart
+                View full cart
               </Link>
             </div>
           </>

@@ -22,11 +22,20 @@ export default async function SiteLayout({
   }));
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div id="top" className="flex min-h-screen flex-col">
+      {/* Keyboard users had to tab through the announcement bar, the logo, four
+          nav links, the mega-menu and three header buttons on every page before
+          reaching the content. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-flame-500 focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Skip to content
+      </a>
       <ScrollProgress />
       <AnnouncementBar />
       <Header categories={navCategories} />
-      <main className="flex-1">{children}</main>
+      <main id="main" className="flex-1">{children}</main>
       <Footer />
       <WhatsAppButton />
       <BackToTop />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Icon } from "@/components/ui/Icon";
 
 // Indicative apparel measurements (in inches). These are typical values —
 // edit to match your factory's actual size chart.
@@ -36,9 +37,10 @@ export function SizeGuide() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-sm font-medium text-flame-500 hover:underline"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-flame-500 hover:underline"
       >
-        📏 Size guide
+        <Icon name="ruler" size={14} />
+        Size guide
       </button>
 
       {open && (
@@ -56,7 +58,7 @@ export function SizeGuide() {
             <div className="flex items-center justify-between">
               <h3 className="font-display text-lg font-bold">Size Guide</h3>
               <button onClick={() => setOpen(false)} aria-label="Close" className="text-ink-400 hover:text-ink-700 dark:hover:text-white">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                <Icon name="close" size={20} strokeWidth={2} />
               </button>
             </div>
             <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">

@@ -29,7 +29,7 @@ model Product {
   sizes       String   @default("[]")
   sports      String   @default("[]")
   price       Float?
-  moq         Int      @default(50)
+  moq         Int      @default(1)
   sku         String?
   featured    Boolean  @default(false)
   published   Boolean  @default(true)

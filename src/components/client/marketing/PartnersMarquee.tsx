@@ -1,49 +1,32 @@
-import Image from "next/image";
-
-const PARTNERS = [
-  "Cricket Academies",
-  "Football Clubs",
-  "School Teams",
-  "Corporate Leagues",
-  "Retail Brands",
-  "Gym Chains",
-  "University Sports",
-  "State Associations",
+const SEGMENTS = [
+  "Cricket academies",
+  "Football clubs",
+  "School teams",
+  "Corporate leagues",
+  "Retail brands",
+  "Gym chains",
+  "University sports",
+  "State associations",
 ];
 
-// Product images cycle between the marquee entries for visual richness
-const PRODUCT_IMGS = [
-  "https://res.cloudinary.com/rdhqircc/image/upload/v1786214189/C8CC4672-1768-439B-AB57-3DFE2AA30F68_m32rlh.png",
-  "https://res.cloudinary.com/rdhqircc/image/upload/v1786214178/61DCE3D1-E9B2-4C85-8A24-B63ED502DF7C_tt7jcl.png",
-  "https://res.cloudinary.com/rdhqircc/image/upload/v1786214190/CD0579E7-A8FA-4C02-B42B-1C2E8D687D5C_aaswyz.png",
-];
-
+/**
+ * These are the customer SEGMENTS served, not named partners — so the row is
+ * set as plain type. It previously interleaved product thumbnails and ✦ glyphs
+ * between the entries, which made a list of eight words look like a logo wall
+ * of clients that do not exist.
+ */
 export function PartnersMarquee() {
-  const row = [...PARTNERS, ...PARTNERS];
+  const row = [...SEGMENTS, ...SEGMENTS];
   return (
-    <div className="relative overflow-hidden py-3">
-      <div className="marquee-track gap-8">
+    <div className="relative overflow-hidden py-3" aria-hidden>
+      <div className="marquee-track gap-10">
         {row.map((p, i) => (
           <span
             key={i}
-            className="inline-flex shrink-0 items-center gap-3"
+            className="inline-flex shrink-0 items-center gap-10 whitespace-nowrap text-base font-semibold text-ink-300 dark:text-ink-700"
           >
-            {/* Tiny product thumbnail every 3rd item */}
-            {i % 3 === 0 && (
-              <span className="relative inline-block h-8 w-8 overflow-hidden rounded-full border border-flame-500/30">
-                <Image
-                  src={PRODUCT_IMGS[(i / 3) % PRODUCT_IMGS.length]}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="32px"
-                />
-              </span>
-            )}
-            <span className="whitespace-nowrap font-display text-base font-bold text-ink-300 dark:text-ink-600">
-              {p}
-            </span>
-            <span className="mx-2 text-flame-500">✦</span>
+            {p}
+            <span className="h-1 w-1 rounded-full bg-flame-500/50" />
           </span>
         ))}
       </div>
@@ -52,4 +35,9 @@ export function PartnersMarquee() {
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent dark:from-ink-950" />
     </div>
   );
+}
+
+/** Screen readers get the list as text rather than as a duplicated marquee. */
+export function segmentList() {
+  return SEGMENTS;
 }

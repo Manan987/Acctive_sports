@@ -7,8 +7,10 @@ import { AddToCart } from "@/components/client/AddToCart";
 import { ProductCard } from "@/components/client/ProductCard";
 import { ProductTabs } from "@/components/client/ProductTabs";
 import { SizeGuide } from "@/components/client/SizeGuide";
-import { formatINR, applyDiscount } from "@/lib/utils";
+import { formatINR } from "@/lib/utils";
+import { unitPrice } from "@/lib/pricing";
 import { site, DISCOUNTS } from "@/lib/site";
+import { Icon } from "@/components/ui/Icon";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +52,8 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = await getRelatedProducts(product.categoryId, product.id, 4);
-  const price = formatINR(product.price);
+  const singlePrice = unitPrice(product.price, 1);
+  const bulkPrice = unitPrice(product.price, DISCOUNTS.bulk.minQty);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -62,7 +65,10 @@ export default async function ProductPage({
     offers: {
       "@type": "Offer",
       priceCurrency: "INR",
-      price: product.price ?? undefined,
+      // Advertise the price a buyer can actually transact at. Publishing MRP
+      // here while the page displays the discounted figure gets the listing
+      // flagged for price mismatch in Google Merchant / rich results.
+      price: singlePrice ?? undefined,
       availability: "https://schema.org/InStock",
     },
   };
@@ -118,71 +124,54 @@ export default async function ProductPage({
             {product.name}
           </h1>
 
-          {/* Price — discount tiers */}
-          {product.price ? (
-            <div className="mt-5 space-y-3">
-              {/* Section label */}
-              <p className="text-xs font-bold uppercase tracking-widest text-ink-400">
-                Pricing &amp; Discounts
+          {/* Price. One headline figure with the MRP struck beside it, then the
+              bulk tier as a supporting row — a buyer should read the number they
+              pay today before anything else. */}
+          {product.price != null && singlePrice != null ? (
+            <div className="mt-5">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="nums text-4xl font-extrabold text-ink-900 dark:text-white">
+                  {formatINR(singlePrice)}
+                </span>
+                <span className="nums text-base text-ink-400 line-through">
+                  {formatINR(product.price)}
+                </span>
+                <span className="rounded-full bg-flame-500/10 px-2.5 py-1 text-xs font-bold text-flame-600 dark:text-flame-400">
+                  Save {DISCOUNTS.single.pct}%
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
+                per piece, excluding customization
               </p>
 
-              {/* Single piece */}
-              {(() => {
-                const s = applyDiscount(product.price, DISCOUNTS.single.pct);
-                return (
-                  <div className="flex items-center justify-between rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 dark:border-ink-700 dark:bg-ink-800/50">
+              {bulkPrice != null && (
+                <div className="mt-4 flex items-center justify-between gap-4 rounded-xl border border-green-500/25 bg-green-50 px-4 py-3 dark:border-green-800/40 dark:bg-green-950/25">
+                  <div className="flex items-start gap-2.5">
+                    <span className="mt-0.5 text-green-600 dark:text-green-400">
+                      <Icon name="percent" size={17} />
+                    </span>
                     <div>
-                      <p className="text-sm font-bold text-ink-900 dark:text-white">1 piece</p>
-                      <p className="text-xs text-ink-500 dark:text-ink-400">Single order</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-ink-400 line-through">{s.original}</p>
-                      <p className="font-display text-2xl font-extrabold text-ink-900 dark:text-white">
-                        {s.sale}
-                        <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-600 dark:text-amber-400">
-                          -{DISCOUNTS.single.pct}% OFF
-                        </span>
+                      <p className="text-sm font-bold text-green-800 dark:text-green-300">
+                        {DISCOUNTS.bulk.minQty}+ pieces — save {DISCOUNTS.bulk.pct}%
+                      </p>
+                      <p className="text-xs text-green-700/80 dark:text-green-500">
+                        Applied automatically at checkout across your whole order
                       </p>
                     </div>
                   </div>
-                );
-              })()}
-
-              {/* Bulk order */}
-              {(() => {
-                const b = applyDiscount(product.price, DISCOUNTS.bulk.pct);
-                const saved = product.price - (b.amount ?? product.price);
-                return (
-                  <div className="flex items-center justify-between rounded-xl border-2 border-green-400/40 bg-green-50 px-4 py-3 dark:border-green-700/40 dark:bg-green-950/30">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm font-bold text-green-700 dark:text-green-400">5+ pieces 🔥</p>
-                        <span className="rounded-full bg-green-600 px-2 py-0.5 text-[10px] font-bold text-white">BEST DEAL</span>
-                      </div>
-                      <p className="text-xs text-green-600/80 dark:text-green-500">Bulk order (5+ pieces) discount</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-ink-400 line-through">{b.original}</p>
-                      <p className="font-display text-2xl font-extrabold text-green-700 dark:text-green-400">
-                        {b.sale}
-                        <span className="ml-2 rounded-full bg-green-600/15 px-2 py-0.5 text-xs font-bold text-green-700 dark:text-green-400">
-                          -{DISCOUNTS.bulk.pct}% OFF
-                        </span>
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-green-600 dark:text-green-500">
-                        Save {formatINR(saved)} per piece vs MRP
-                      </p>
-                    </div>
+                  <div className="shrink-0 text-right">
+                    <p className="nums text-2xl font-extrabold text-green-700 dark:text-green-400">
+                      {formatINR(bulkPrice)}
+                    </p>
+                    <p className="nums text-[11px] text-green-600 dark:text-green-500">
+                      save {formatINR(product.price - bulkPrice)}/pc
+                    </p>
                   </div>
-                );
-              })()}
-
-              <p className="text-[11px] text-ink-400 dark:text-ink-500">
-                * Discounts applied automatically. Prices are per piece excluding customization.
-              </p>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="mt-4">
+            <div className="mt-5">
               <span className="inline-flex rounded-full bg-flame-500/10 px-4 py-1.5 text-sm font-semibold text-flame-600 dark:text-flame-400">
                 Price on request
               </span>
@@ -226,18 +215,18 @@ export default async function ProductPage({
 
           {/* Trust badges */}
           <div className="mt-8 grid grid-cols-3 gap-3 border-t border-ink-100 pt-6 text-center text-xs text-ink-500 dark:border-ink-800 dark:text-ink-400">
-            <div>
-              <div className="mb-1 text-2xl">🎨</div>
-              Fully customizable
-            </div>
-            <div>
-              <div className="mb-1 text-2xl">🚚</div>
-              Pan-India delivery
-            </div>
-            <div>
-              <div className="mb-1 text-2xl">🏭</div>
-              Factory direct
-            </div>
+            {([
+              { icon: "palette", label: "Fully customizable" },
+              { icon: "truck", label: "Pan-India delivery" },
+              { icon: "factory", label: "Factory direct" },
+            ] as const).map((b) => (
+              <div key={b.label} className="flex flex-col items-center gap-2">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-flame-500/10 text-flame-500">
+                  <Icon name={b.icon} size={19} />
+                </span>
+                {b.label}
+              </div>
+            ))}
           </div>
         </div>
       </div>

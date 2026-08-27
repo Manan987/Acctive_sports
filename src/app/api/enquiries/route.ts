@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { enquirySchema } from "@/lib/validation";
+import { tierFor, unitPrice } from "@/lib/pricing";
 import { getSession } from "@/lib/auth";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 import { serverError, readJson } from "@/lib/apiError";
@@ -54,31 +55,44 @@ export async function POST(req: Request) {
       : [];
     const byId = new Map(products.map((p) => [p.id, p]));
 
+    // Resolve first, price second: the discount tier depends on the size of the
+    // whole order, so the surviving lines have to be known before any line can
+    // be priced. Lines whose product was deleted or unpublished since it went
+    // into the cart are dropped rather than recorded as unsellable orders.
+    const resolved = data.items.flatMap((i) => {
+      const p = byId.get(i.productId);
+      return p ? [{ input: i, product: p }] : [];
+    });
+
+    const totalPieces = resolved.reduce((n, { input }) => n + input.qty, 0);
+    const tier = tierFor(totalPieces);
+
     let total = 0;
     let hasPrice = false;
-    const items = data.items.flatMap((i) => {
-      const p = byId.get(i.productId);
-      // Product deleted or unpublished since it was added to the cart — drop
-      // the line rather than record an order for something unsellable.
-      if (!p) return [];
-      if (p.price != null) {
+    const items = resolved.map(({ input: i, product: p }) => {
+      // Priced from the catalogue and the tier rules, never from the payload —
+      // the discount the customer was shown is the one that gets recorded.
+      const unit = unitPrice(p.price, totalPieces);
+      if (p.price != null && unit != null) {
         hasPrice = true;
-        total += p.price * i.qty;
+        total += unit * i.qty;
       }
-      return [
-        {
-          productId: p.id,
-          name: p.name,
-          slug: p.slug,
-          qty: i.qty,
-          size: i.size,
-          fabric: i.fabric,
-          note: i.note,
-          price: p.price,
-          moq: p.moq,
-          lineTotal: p.price != null ? p.price * i.qty : null,
-        },
-      ];
+      return {
+        productId: p.id,
+        name: p.name,
+        slug: p.slug,
+        qty: i.qty,
+        size: i.size,
+        fabric: i.fabric,
+        note: i.note,
+        // `price`/`lineTotal` are what the customer owes; `mrp` is kept
+        // alongside so the admin can see the discount that was applied.
+        price: unit,
+        mrp: p.price,
+        discountPct: p.price != null ? tier.pct : null,
+        moq: p.moq,
+        lineTotal: unit != null ? unit * i.qty : null,
+      };
     });
 
     // A cart order whose every line has since disappeared is not an order.
@@ -100,6 +114,8 @@ export async function POST(req: Request) {
         // Previously accepted by the schema and then thrown away, so the admin
         // had no way to know how the customer intended to pay.
         paymentMethod: data.paymentMethod ?? null,
+        // The payable total after the tier discount — the same figure the
+        // checkout summary showed the customer, not the MRP sum.
         total: hasPrice ? Math.round(total * 100) / 100 : null,
         items: JSON.stringify(items),
       },

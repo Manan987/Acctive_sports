@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatINR } from "@/lib/utils";
+import { Icon } from "@/components/ui/Icon";
 
 type Item = {
   name: string;
@@ -10,7 +11,11 @@ type Item = {
   size?: string;
   fabric?: string;
   note?: string;
+  /** Payable unit price after the tier discount. */
   price?: number | null;
+  /** Catalogue MRP before the discount (absent on orders placed before pricing tiers). */
+  mrp?: number | null;
+  discountPct?: number | null;
   lineTotal?: number | null;
 };
 type Enquiry = {
@@ -29,10 +34,10 @@ type Enquiry = {
 };
 
 const PAYMENT_LABEL: Record<string, string> = {
-  upi: "📲 UPI",
-  bank_transfer: "🏦 Bank Transfer",
-  cod: "💵 Cash on Delivery",
-  razorpay: "💳 Card / Net Banking",
+  upi: "UPI",
+  bank_transfer: "Bank transfer",
+  cod: "Cash on delivery",
+  razorpay: "Card / net banking",
 };
 
 const STATUSES = ["NEW", "IN_PROGRESS", "QUOTED", "CLOSED"] as const;
@@ -46,6 +51,7 @@ const SOURCE_COLOR: Record<string, string> = {
   cart: "bg-violet-500/10 text-violet-600",
   quote: "bg-amber-500/10 text-amber-600",
   contact: "bg-sky-500/10 text-sky-600",
+  newsletter: "bg-teal-500/10 text-teal-600",
 };
 
 export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
@@ -113,7 +119,9 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                       {e.total != null && ` · ${formatINR(e.total)}`}
                     </p>
                   </div>
-                  <span className="text-ink-400">{open ? "▲" : "▼"}</span>
+                  <span className={`shrink-0 text-ink-400 transition-transform ${open ? "rotate-180" : ""}`}>
+                    <Icon name="chevronDown" size={18} />
+                  </span>
                 </button>
 
                 {open && (
@@ -142,17 +150,38 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                       <div className="mt-4 overflow-x-auto rounded-xl border border-ink-100 dark:border-ink-800">
                         <table className="w-full text-sm">
                           <thead className="bg-ink-50 text-left text-xs uppercase text-ink-500 dark:bg-ink-950">
-                            <tr><th className="p-2">Product</th><th className="p-2">Qty</th><th className="p-2">Size</th><th className="p-2">Fabric</th><th className="p-2">Price</th><th className="p-2">Line total</th><th className="p-2">Note</th></tr>
+                            <tr>
+                              <th className="p-2">Product</th>
+                              <th className="p-2">Qty</th>
+                              <th className="p-2">Size</th>
+                              <th className="p-2">Fabric</th>
+                              <th className="p-2">MRP</th>
+                              <th className="p-2">Unit paid</th>
+                              <th className="p-2">Line total</th>
+                              <th className="p-2">Note</th>
+                            </tr>
                           </thead>
                           <tbody className="divide-y divide-ink-100 dark:divide-ink-800">
                             {e.items.map((it, i) => (
                               <tr key={i}>
                                 <td className="p-2">{it.name}</td>
-                                <td className="p-2">{it.qty}</td>
+                                <td className="nums p-2">{it.qty}</td>
                                 <td className="p-2">{it.size || "—"}</td>
                                 <td className="p-2">{it.fabric || "—"}</td>
-                                <td className="p-2">{it.price != null ? formatINR(it.price) : "On request"}</td>
-                                <td className="p-2 font-semibold">{it.lineTotal != null ? formatINR(it.lineTotal) : "—"}</td>
+                                <td className="nums p-2 text-ink-400">
+                                  {it.mrp != null ? <s>{formatINR(it.mrp)}</s> : "—"}
+                                </td>
+                                <td className="nums p-2">
+                                  {it.price != null ? formatINR(it.price) : "On request"}
+                                  {it.discountPct ? (
+                                    <span className="ml-1 text-[10px] font-bold text-green-600">
+                                      &minus;{it.discountPct}%
+                                    </span>
+                                  ) : null}
+                                </td>
+                                <td className="nums p-2 font-semibold">
+                                  {it.lineTotal != null ? formatINR(it.lineTotal) : "—"}
+                                </td>
                                 <td className="p-2 text-ink-500">{it.note || "—"}</td>
                               </tr>
                             ))}
@@ -160,8 +189,8 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                           {e.total != null && (
                             <tfoot className="border-t border-ink-200 dark:border-ink-700">
                               <tr>
-                                <td className="p-2 font-semibold" colSpan={5}>Order total</td>
-                                <td className="p-2 font-bold" colSpan={2}>{formatINR(e.total)}</td>
+                                <td className="p-2 font-semibold" colSpan={6}>Order total (payable)</td>
+                                <td className="nums p-2 font-bold" colSpan={2}>{formatINR(e.total)}</td>
                               </tr>
                             </tfoot>
                           )}

@@ -29,7 +29,7 @@ export function WhatsAppButton() {
       {showTooltip && (
         <div className="animate-tooltip hidden sm:block">
           <div className="relative rounded-xl border border-ink-100 bg-white px-4 py-2.5 text-sm font-medium text-ink-700 shadow-xl dark:border-ink-700 dark:bg-ink-900 dark:text-ink-200">
-            Need help? Chat with us! 💬
+            Questions about an order? Chat with us.
             {/* Arrow */}
             <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 h-3 w-3 rotate-45 border-r border-t border-ink-100 bg-white dark:border-ink-700 dark:bg-ink-900" />
           </div>

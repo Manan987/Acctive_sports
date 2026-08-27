@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { site, fullAddress, whatsappLink } from "@/lib/site";
+import { site, fullAddress, whatsappLink, STATS } from "@/lib/site";
+import { Icon, InstagramIcon } from "@/components/ui/Icon";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -55,37 +56,31 @@ export function Footer() {
               href={whatsappLink("Hi ACCTIVE, I'd like to enquire about your sportswear.")}
               target="_blank"
               rel="noopener"
-              aria-label="WhatsApp"
+              aria-label="Contact us on WhatsApp"
               className="grid h-9 w-9 place-items-center rounded-full border border-ink-700 bg-ink-900 text-ink-400 transition hover:border-green-500 hover:bg-green-500/10 hover:text-green-400"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
+              <Icon name="whatsapp" size={16} />
             </a>
             <a
               href={site.instagram}
               target="_blank"
               rel="noopener"
-              aria-label="Instagram"
+              aria-label="Follow us on Instagram"
               className="grid h-9 w-9 place-items-center rounded-full border border-ink-700 bg-ink-900 text-ink-400 transition hover:border-pink-500 hover:bg-pink-500/10 hover:text-pink-400"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-              </svg>
+              <InstagramIcon size={16} />
             </a>
+            {/* IndiaMART has no icon in the set; a wordmark is honest and legible.
+                The previous version nested a <text> node inside a path-only SVG,
+                which rendered as an unreadable smudge at 17px. */}
             <a
               href="https://www.indiamart.com/active-sportsindustries-uttarpradesh/our-products.html"
               target="_blank"
               rel="noopener"
-              aria-label="IndiaMart"
-              className="grid h-9 w-9 place-items-center rounded-full border border-ink-700 bg-ink-900 text-ink-400 transition hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-400"
+              aria-label="View our IndiaMART storefront"
+              className="grid h-9 place-items-center rounded-full border border-ink-700 bg-ink-900 px-3 text-[10px] font-bold uppercase tracking-wide text-ink-400 transition hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-400"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 6h2v12H4V6zm14 0h-2v12h2V6zM8 6h3.5v7H8V6zm4.5 0H16v4.5h-3.5V6z" />
-                <text x="50%" y="62%" dominantBaseline="middle" textAnchor="middle" fontSize="16" fontWeight="900" fontFamily="sans-serif" letterSpacing="-1.5">iM</text>
-              </svg>
+              IndiaMART
             </a>
           </div>
         </div>
@@ -133,25 +128,26 @@ export function Footer() {
               href="/catalogue"
               className="inline-flex items-center gap-2 rounded-xl border border-flame-500/40 bg-flame-500/10 px-4 py-2.5 text-sm font-semibold text-flame-400 transition hover:bg-flame-500 hover:text-white"
             >
-              Shop Now →
+              Shop now
+              <Icon name="arrowRight" size={15} />
             </Link>
           </div>
         </div>
       </div>
 
-      {/* ── Trust Badges ── */}
+      {/* ── Trust badges ── */}
       <div className="border-t border-ink-800">
-        <div className="container-x flex flex-wrap items-center justify-center gap-6 py-5">
-          {[
-            { icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", label: "Verified Manufacturer" },
-            { icon: "M3 21V3h18v18H3zm3-3h12V6H6v12z", label: "Made in India 🇮🇳" },
-            { icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4", label: "Factory Direct" },
-            { icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z", label: "20+ Years" },
-          ].map((badge) => (
+        <div className="container-x flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-5">
+          {([
+            { icon: "shieldCheck", label: "Verified manufacturer" },
+            { icon: "globe", label: "Made in India" },
+            { icon: "factory", label: "Factory direct" },
+            { icon: "award", label: `${STATS.yearsInTrade} years in trade` },
+          ] as const).map((badge) => (
             <div key={badge.label} className="flex items-center gap-2 text-ink-500">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-flame-500/60">
-                <path d={badge.icon} />
-              </svg>
+              <span className="text-flame-500/70">
+                <Icon name={badge.icon} size={15} />
+              </span>
               <span className="text-xs font-medium">{badge.label}</span>
             </div>
           ))}
@@ -161,15 +157,18 @@ export function Footer() {
       {/* ── Bottom bar ── */}
       <div className="border-t border-ink-800">
         <div className="container-x flex flex-col items-center justify-between gap-2 py-5 text-xs text-ink-500 sm:flex-row">
-          <p>© {year} {site.name}. All rights reserved.</p>
-          <p className="flex items-center gap-1.5">
-            Made with ❤️ in Meerut, India 🇮🇳
+          <p>
+            © {year} {site.name}. All rights reserved.
           </p>
+          <p>Designed and manufactured in Meerut, Uttar Pradesh</p>
+          {/* href="#" scrolled nowhere. An in-page anchor to the top of the
+              document is a real link, works without JS, and keeps focus sane. */}
           <a
-            href="#"
-            className="hidden items-center gap-1 transition hover:text-flame-400 sm:flex"
+            href="#top"
+            className="hidden items-center gap-1.5 transition hover:text-flame-400 sm:flex"
           >
-            Back to top ↑
+            Back to top
+            <Icon name="chevronDown" size={13} className="rotate-180" />
           </a>
         </div>
       </div>

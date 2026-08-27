@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { DISCOUNTS } from "@/lib/site";
+import { Icon } from "@/components/ui/Icon";
 
 const FAQS = [
   {
     q: "What discounts do you offer?",
-    a: "We offer 25% off on single piece orders and a massive 50% off on bulk orders of 5+ pieces. Discounts are automatically applied — no coupon needed. The bulk discount is our factory-direct pricing passed straight to you.",
+    a: `We take ${DISCOUNTS.single.pct}% off every product, and ${DISCOUNTS.bulk.pct}% off once your order reaches ${DISCOUNTS.bulk.minQty} pieces in total — across the whole cart, not per design. Both are applied automatically at checkout; there is no coupon code. The bulk rate is our factory-direct pricing passed straight on.`,
   },
   {
     q: "What is your minimum order quantity (MOQ)?",
-    a: "You can order as little as 1 piece — and still get 25% off! For bulk team orders (5+ pieces) you unlock 50% off with factory pricing. Add to cart and the discount is applied automatically.",
+    a: `You can order from a single piece and still get ${DISCOUNTS.single.pct}% off. Reach ${DISCOUNTS.bulk.minQty} pieces in one order — mixing designs and sizes is fine — and the discount rises to ${DISCOUNTS.bulk.pct}%. A handful of made-to-order designs carry their own higher minimum, which is shown on the product page.`,
   },
   {
     q: "Can I get my team name, numbers and logo printed?",
@@ -54,19 +56,38 @@ export function FAQ() {
           const isOpen = open === i;
           return (
             <div key={i} className="card overflow-hidden">
-              <button
-                onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-4 p-5 text-left"
-                aria-expanded={isOpen}
+              <h3>
+                <button
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  className="flex w-full items-center justify-between gap-4 p-5 text-left"
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-panel-${i}`}
+                  id={`faq-trigger-${i}`}
+                >
+                  <span className="font-sans font-semibold tracking-normal text-ink-900 dark:text-white">
+                    {f.q}
+                  </span>
+                  <span
+                    className={`shrink-0 text-flame-500 transition-transform duration-200 ${
+                      isOpen ? "rotate-45" : ""
+                    }`}
+                  >
+                    <Icon name="plus" size={20} strokeWidth={2.2} />
+                  </span>
+                </button>
+              </h3>
+              <div
+                id={`faq-panel-${i}`}
+                role="region"
+                aria-labelledby={`faq-trigger-${i}`}
+                className={`grid transition-all duration-300 ${
+                  isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                }`}
               >
-                <span className="font-semibold text-ink-900 dark:text-white">{f.q}</span>
-                <span className={`shrink-0 text-flame-500 transition ${isOpen ? "rotate-45" : ""}`}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-                </span>
-              </button>
-              <div className={`grid transition-all duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                 <div className="overflow-hidden">
-                  <p className="px-5 pb-5 text-sm text-ink-600 dark:text-ink-300">{f.a}</p>
+                  <p className="px-5 pb-5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                    {f.a}
+                  </p>
                 </div>
               </div>
             </div>

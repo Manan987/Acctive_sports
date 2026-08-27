@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
       <div className="mt-8 card p-6">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold">Recent enquiries</h2>
-          <Link href="/admin/enquiries" className="text-sm font-semibold text-flame-500 hover:underline">View all →</Link>
+          <Link href="/admin/enquiries" className="text-sm font-semibold text-flame-500 hover:underline">View all</Link>
         </div>
         {recent.length === 0 ? (
           <p className="mt-4 text-sm text-ink-500">No enquiries yet.</p>

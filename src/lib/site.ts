@@ -42,13 +42,60 @@ export const site = {
   gaId: process.env.NEXT_PUBLIC_GA_ID || "",
 } as const;
 
-// Sitewide discount tiers — used in ProductCard, product page, cart, etc.
+// Sitewide discount tiers. Every price shown or charged is derived from these
+// via lib/pricing.ts — never hard-code a percentage or a piece count in a
+// component, or the copy and the cart total drift apart again.
 export const DISCOUNTS = {
-  /** Single piece discount — shown on product cards and detail pages */
+  /** Applies to any order below the bulk threshold — including a single piece. */
   single: { pct: 25, label: "Single piece" },
-  /** Bulk order discount — applies at or above bulkMinQty pieces */
-  bulk: { pct: 50, label: "Bulk order (5+ pcs)", minQty: 5 },
+  /** Applies once the order reaches `minQty` pieces in total. */
+  bulk: { pct: 50, label: "Bulk order", minQty: 5 },
 } as const;
+
+/**
+ * Order rules. `minQty` is the smallest order the factory accepts; the site
+ * sells from one piece, so per-product `moq` values are only surfaced when a
+ * particular design genuinely demands more than this.
+ */
+export const ORDER = {
+  minQty: 1,
+  bulkMinQty: DISCOUNTS.bulk.minQty,
+} as const;
+
+/**
+ * Headline figures used across the marketing sections. Kept here so there is
+ * one place to correct them — a number that appears in three components and
+ * disagrees with itself is the fastest way to lose a B2B buyer's trust.
+ */
+export const STATS = {
+  designs: "300+",
+  kitsDelivered: "10K+",
+  sportsCovered: "8",
+  yearsInTrade: "20+",
+} as const;
+
+/**
+ * Payment details shown on the order-confirmation screen.
+ *
+ * These were previously hard-coded placeholders — account "1234567890", IFSC
+ * "HDFC0001234" — rendered to customers under the heading "Transfer to the
+ * following account". Anything not supplied via env is now simply omitted, and
+ * the checkout falls back to "our team will send the details", so the site can
+ * never instruct a customer to pay into an account that does not exist.
+ */
+export const payments = {
+  upiId: process.env.NEXT_PUBLIC_UPI_ID || "",
+  bank: {
+    name: process.env.NEXT_PUBLIC_BANK_ACCOUNT_NAME || "",
+    account: process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || "",
+    ifsc: process.env.NEXT_PUBLIC_BANK_IFSC || "",
+    bankName: process.env.NEXT_PUBLIC_BANK_NAME || "",
+  },
+} as const;
+
+export const hasUpi = payments.upiId.trim().length > 0;
+export const hasBankDetails =
+  payments.bank.account.trim().length > 0 && payments.bank.ifsc.trim().length > 0;
 
 export const fullAddress = `${site.address.line1}, ${site.address.line2}, ${site.address.city}, ${site.address.state} ${site.address.pin}, ${site.address.country}`;
 

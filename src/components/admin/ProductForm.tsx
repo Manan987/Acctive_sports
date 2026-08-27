@@ -32,7 +32,7 @@ const EMPTY: ProductFormValues = {
   sizes: [...SIZES],
   sports: [],
   price: null,
-  moq: 50,
+  moq: 1,
   sku: "",
   featured: false,
   published: true,

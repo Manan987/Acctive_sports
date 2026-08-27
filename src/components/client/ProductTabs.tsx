@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { ProductView } from "@/lib/data";
+import { ORDER } from "@/lib/site";
+import { Icon } from "@/components/ui/Icon";
 
 const TABS = ["Description", "Specifications", "Customization & Delivery"] as const;
 
@@ -45,34 +47,68 @@ export function ProductTabs({ product }: { product: ProductView }) {
             <Spec label="Sizes" value={product.sizes.join(", ") || "XS–3XL"} />
             <Spec label="Sports" value={product.sports.join(", ") || "All"} />
             <Spec label="Print" value="Full sublimation (edge-to-edge)" />
-            <Spec label="Minimum order" value={`${product.moq} pieces`} />
+            {/* Only worth stating when this design actually demands more than
+                the site minimum. Products still carrying the legacy moq of 50
+                were contradicting the "order from 1 piece" promise on the same
+                page, in the announcement bar and in the FAQ. */}
+            <Spec
+              label="Minimum order"
+              value={
+                product.moq > ORDER.minQty
+                  ? `${product.moq} pieces for this design`
+                  : `${ORDER.minQty} piece`
+              }
+            />
           </dl>
         )}
 
         {tab === "Customization & Delivery" && (
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-8 sm:grid-cols-2">
             <div>
-              <h4 className="font-semibold text-ink-900 dark:text-white">Customization</h4>
-              <ul className="mt-2 space-y-1.5 text-sm">
-                <li>✓ Team name, player names & numbers</li>
-                <li>✓ Club / school / brand logo</li>
-                <li>✓ Any colour combination</li>
-                <li>✓ Free digital mockup before production</li>
-              </ul>
+              <h4 className="font-sans font-semibold tracking-normal text-ink-900 dark:text-white">
+                Customization
+              </h4>
+              <PointList
+                points={[
+                  "Team name, player names and numbers",
+                  "Club, school or brand logo",
+                  "Any colour combination",
+                  "Free digital mockup before production",
+                ]}
+              />
             </div>
             <div>
-              <h4 className="font-semibold text-ink-900 dark:text-white">Delivery</h4>
-              <ul className="mt-2 space-y-1.5 text-sm">
-                <li>✓ Pan-India dispatch from Meerut</li>
-                <li>✓ Bulk & repeat orders supported</li>
-                <li>✓ Timelines shared with your quote</li>
-                <li>✓ Careful QC before every dispatch</li>
-              </ul>
+              <h4 className="font-sans font-semibold tracking-normal text-ink-900 dark:text-white">
+                Delivery
+              </h4>
+              <PointList
+                points={[
+                  "Pan-India dispatch from Meerut",
+                  "Bulk and repeat orders supported",
+                  "Timelines shared with your quote",
+                  "QC checked before every dispatch",
+                ]}
+              />
             </div>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+function PointList({ points }: { points: string[] }) {
+  return (
+    <ul className="mt-3 space-y-2 text-sm">
+      {points.map((p) => (
+        <li key={p} className="flex items-start gap-2.5">
+          <span className="mt-0.5 shrink-0 text-flame-500">
+            <Icon name="check" size={15} strokeWidth={2.4} />
+          </span>
+          {p}
+        </li>
+      ))}
+    </ul>
   );
 }
 

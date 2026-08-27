@@ -23,14 +23,14 @@ const STATS: Stat[] = [
   {
     value: 8,
     label: "Sports Covered",
-    desc: "Cricket to Boxing — we've got it",
+    desc: "Cricket through to boxing and athletics",
     img: "https://res.cloudinary.com/rdhqircc/image/upload/v1786214190/CD0579E7-A8FA-4C02-B42B-1C2E8D687D5C_aaswyz.png",
   },
   {
     value: 100,
     suffix: "%",
     label: "Customizable",
-    desc: "Your name, number, logo, colours",
+    desc: "Your name, number, logo and colours",
     img: "https://res.cloudinary.com/rdhqircc/image/upload/v1786214189/C8CC4672-1768-439B-AB57-3DFE2AA30F68_m32rlh.png",
   },
 ];
@@ -85,30 +85,29 @@ export function StatsCounter() {
 
 function StatCard({ stat, run }: { stat: Stat; run: boolean }) {
   const n = useCountUp(stat.value, run);
+  // Grouped thousands, so "10000+" reads as "10,000+".
+  const shown = n.toLocaleString("en-IN");
+
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:border-flame-500/30 hover:bg-white/10">
-      {/* Background image */}
-      <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-20">
-        <Image
-          src={stat.img}
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="300px"
-        />
+    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition-colors duration-300 hover:border-flame-500/30 hover:bg-white/[0.08]">
+      {/* Background image — the previous version faded a product photo in behind
+          the number on hover, which made the figure hard to read at the exact
+          moment someone was reading it. */}
+      <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-10">
+        <Image src={stat.img} alt="" fill className="object-cover object-center" sizes="300px" />
       </div>
 
-      {/* Content */}
       <div className="relative">
-        <div className="font-display text-4xl font-extrabold text-flame-400 drop-shadow sm:text-5xl">
-          {stat.prefix}{n}{stat.suffix}
+        <div className="nums text-4xl font-extrabold text-flame-400 sm:text-5xl">
+          {stat.prefix}
+          {shown}
+          {stat.suffix}
         </div>
         <div className="mt-2 font-semibold text-white">{stat.label}</div>
         <div className="mt-1 text-xs text-ink-400">{stat.desc}</div>
       </div>
 
-      {/* Bottom flame line on hover */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-flame-500/0 via-flame-500 to-flame-500/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-flame-500/0 via-flame-500 to-flame-500/0 transition-transform duration-300 group-hover:scale-x-100" />
     </div>
   );
 }

@@ -78,7 +78,7 @@ async function main() {
       fabrics: JSON.stringify(fabrics),
       sizes: JSON.stringify(SIZES),
       sports: JSON.stringify(sports),
-      moq: 50,
+      moq: 1,
       featured: i < 2,   // first 2 are featured
       published: true,
       categoryId: cat.id,

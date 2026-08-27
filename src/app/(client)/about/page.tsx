@@ -120,7 +120,7 @@ export default function AboutPage() {
 
         <div className="container-x relative py-24 md:py-36">
           <span className="inline-flex items-center gap-2 rounded-full border border-flame-400/30 bg-flame-500/10 px-4 py-1.5 text-sm font-semibold text-flame-300 backdrop-blur-sm">
-            ✦ About ACCTIVE Sports Industries
+            About ACCTIVE Sports Industries
           </span>
           <h1 className="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-tight drop-shadow-xl sm:text-5xl lg:text-6xl">
             Discover{" "}

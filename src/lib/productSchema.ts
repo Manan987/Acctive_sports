@@ -10,7 +10,7 @@ export const productSchema = z.object({
   sizes: z.array(z.string()).default([]),
   sports: z.array(z.string()).default([]),
   price: z.union([z.number(), z.null()]).optional(),
-  moq: z.number().int().positive().default(50),
+  moq: z.number().int().positive().default(1),
   sku: z.string().optional().default(""),
   featured: z.boolean().default(false),
   published: z.boolean().default(true),

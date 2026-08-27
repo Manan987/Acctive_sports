@@ -1,56 +1,53 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { DISCOUNTS } from "@/lib/site";
+import { Icon, type IconName } from "@/components/ui/Icon";
 
-const MESSAGES = [
-  "🔥 BULK OFFER: 50% OFF on orders of 5+ pieces — Factory-direct pricing!",
-  "🏷️ SINGLE PIECE: 25% OFF on every product — No minimum order!",
-  "🎨 Free digital mockup with every order — no commitment needed",
-  "🚚 Factory-direct prices · Delivered across India from Meerut",
-  "🏆 Trusted by 500+ academies, clubs & schools nationwide",
+type Message = { icon: IconName; text: string };
+
+// Derived from the discount config rather than retyped, so a rate change in
+// site.ts can never leave the bar advertising an offer the cart won't honour.
+const MESSAGES: Message[] = [
+  {
+    icon: "percent",
+    text: `${DISCOUNTS.bulk.pct}% off orders of ${DISCOUNTS.bulk.minQty}+ pieces — applied automatically at checkout`,
+  },
+  {
+    icon: "tag",
+    text: `${DISCOUNTS.single.pct}% off every product, from a single piece — no minimum order`,
+  },
+  { icon: "palette", text: "Free digital mockup with every order — no commitment" },
+  { icon: "truck", text: "Factory-direct pricing, delivered across India from Meerut" },
 ];
 
 export function AnnouncementBar() {
   const [i, setI] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % MESSAGES.length), 3500);
+    const t = setInterval(() => setI((v) => (v + 1) % MESSAGES.length), 5000);
     return () => clearInterval(t);
   }, []);
 
+  const msg = MESSAGES[i];
+
   return (
-    <div className="relative overflow-hidden bg-ink-950 text-white">
-      {/* Gradient accent lines */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-flame-500/70 to-transparent" />
-
-      <div className="container-x flex h-9 items-center justify-between gap-4 overflow-hidden">
-        {/* Logo thumbnail */}
-        <div className="hidden shrink-0 items-center gap-2 sm:flex">
-          <Image
-            src="https://res.cloudinary.com/rdhqircc/image/upload/v1787571541/WhatsApp_Image_2026-08-24_at_4.48.59_PM-removebg-preview_gabj92.png"
-            alt="ACCTIVE Sports"
-            width={60}
-            height={20}
-            className="h-5 w-auto object-contain opacity-80"
-          />
-        </div>
-
-        {/* Rotating message */}
-        <div className="flex flex-1 items-center justify-center text-center text-xs font-medium">
-          <span key={i} className="animate-fade-up">
-            {MESSAGES[i]}
+    <div className="relative overflow-hidden border-b border-white/5 bg-ink-950 text-white">
+      <div className="container-x flex h-9 items-center justify-center">
+        {/* aria-live so the rotation is announced once rather than read as four
+            separate blocks of page text by a screen reader. */}
+        <p
+          key={i}
+          aria-live="polite"
+          className="animate-fade-up flex items-center gap-2 text-center text-xs font-medium text-ink-200"
+        >
+          <span className="text-flame-500">
+            <Icon name={msg.icon} size={13} />
           </span>
-        </div>
-
-        {/* Right accent */}
-        <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-flame-500 animate-pulse" />
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-400">
-            Live
-          </span>
-        </div>
+          {msg.text}
+        </p>
       </div>
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-flame-500/60 to-transparent" />
     </div>
   );
 }
