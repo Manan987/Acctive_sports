@@ -57,30 +57,51 @@ const SPORTS = [
  *   Cut & Sew Pattern Jacket           ₹1899
  */
 const PRICE_MAP: Record<string, number> = {
-  // Round Neck T-Shirts
+  // ── A. ROUND NECK T-SHIRTS ──────────────────────────────────────────────
+  "round-neck-t-shirts::plain selena":             299,   // Plain / no print
+  "round-neck-t-shirts::front sublimation":        399,   // F1 Series
+  "round-neck-t-shirts::front & back sublimation": 499,   // FB Series
+  "round-neck-t-shirts::full sublimation":         599,   // FL Series
+  // keep old "Classic Fit" label working after a reseed
   "round-neck-t-shirts::classic fit":              299,
-  "round-neck-t-shirts::front sublimation":        399,
-  "round-neck-t-shirts::front & back sublimation": 499,
-  "round-neck-t-shirts::full sublimation":         599,
-  // Collar T-Shirts
-  "collar-t-shirts::sap mattie":                   499,
-  "collar-t-shirts::front & back sublimation":     699,
-  "collar-t-shirts::full sublimation":             799,
-  // Shorts
-  "shorts::basketball shorts":                     399,
-  "shorts::training shorts":                       499,
-  "shorts::match shorts":                          399,
-  // Lowers
-  "lowers::jogger":                                499,
-  "lowers::regular lower":                         699,
-  "lowers::slim fit lower":                        499,
-  // Tracksuits
-  "tracksuits::team tracksuit":                    1699,
-  "tracksuits::presentation set":                  1799,
-  "tracksuits::winter tracksuit":                  1599,
-  // Jackets
-  "jackets::full sublimation jacket":              1999,
-  "jackets::cut & sew pattern jacket":             1899,
+
+  // ── B. COLLAR T-SHIRTS ───────────────────────────────────────────────────
+  "collar-t-shirts::sap mattie":                   499,   // SAP Series
+  "collar-t-shirts::front & back sublimation":     699,   // FB Series
+  "collar-t-shirts::full sublimation":             799,   // FL Series
+
+  // ── C. SHORTS ────────────────────────────────────────────────────────────
+  "shorts::ns lycra shorts":                       399,
+  "shorts::knitted lycra shorts":                  499,
+  "shorts::zurich shorts":                         399,
+  "shorts::sublimated zurich shorts":              599,
+  "shorts::cycling shorts":                        699,   // NS Lycra + Tightee
+  "shorts::superpoly shorts":                      399,
+
+  // ── D. LOWERS ─────────────────────────────────────────────────────────────
+  "lowers::ns lycra lower":                        499,
+  "lowers::knitted lycra lower":                   699,
+  "lowers::zurich lower":                          499,
+  "lowers::sublimated lower":                      999,   // Zurich & Diagonal
+  "lowers::superpoly lower":                       499,
+
+  // ── E. TRACKSUITS ─────────────────────────────────────────────────────────
+  "tracksuits::plain knitted lycra":               1699,
+  "tracksuits::sublimated knitted lycra":          1799,
+  "tracksuits::plain ns lycra":                    1799,
+  "tracksuits::sublimated ns lycra":               1899,
+  "tracksuits::plain zurich":                      1599,
+  "tracksuits::sublimated zurich":                 1699,
+  "tracksuits::plain superpoly":                   1199,
+  "tracksuits::sublimated superpoly":              1299,
+
+  // ── F. TRACK JACKETS (NS Lycra & Butter NS) ───────────────────────────────
+  "track-jackets::full sublimation jacket":        1999,
+  "track-jackets::cut & sew jacket":               1899,
+  // keep old seed labels mapped
+  "track-jackets::full sublimation":               1999,
+  "track-jackets::front & back sublimation":       1899,
+  "track-jackets::premium zipper":                 1899,
 };
 
 /** Resolve MRP for a product from its category slug + style label. */
@@ -342,12 +363,16 @@ const CATEGORIES: CatSpec[] = [
     name: "Shorts",
     slug: "shorts",
     description:
-      "Lightweight performance shorts with moisture-wicking fabric and custom sublimated designs.",
+      "Performance shorts in NS Lycra, Knitted Lycra, Zurich and Superpoly — plain or sublimated. MOQ 5 pcs, sizes S–2XL.",
+    // 6 material variants × 2 designs each = 12 products
     count: 12,
     styles: [
-      { label: "Match Shorts",      imageKey: "shorts-elite" },
-      { label: "Training Shorts",   imageKey: "shorts-lycra" },
-      { label: "Basketball Shorts", imageKey: "shorts-ns" },
+      { label: "NS Lycra Shorts",         imageKey: "shorts-ns"    },  // ₹399
+      { label: "Knitted Lycra Shorts",    imageKey: "shorts-lycra" },  // ₹499
+      { label: "Zurich Shorts",           imageKey: "shorts-elite" },  // ₹399
+      { label: "Sublimated Zurich Shorts",imageKey: "shorts-elite" },  // ₹599
+      { label: "Cycling Shorts",          imageKey: "shorts-ns"    },  // ₹699  NS Lycra + Tightee
+      { label: "Superpoly Shorts",        imageKey: "shorts-ns"    },  // ₹399
     ],
     order: 3,
     categoryImageKey: "shorts-elite",
@@ -356,12 +381,15 @@ const CATEGORIES: CatSpec[] = [
     name: "Lowers",
     slug: "lowers",
     description:
-      "Track lowers and joggers built for training and travel, tailored fit with side pockets.",
+      "Track lowers in NS Lycra, Knitted Lycra, Zurich and Superpoly — plain or sublimated. MOQ 5 pcs, sizes S–2XL.",
+    // 5 material variants × 3 designs each = 15 products
     count: 15,
     styles: [
-      { label: "Slim Fit Lower", imageKey: "lowers-diagonal" },
-      { label: "Regular Lower",  imageKey: "lowers-elite" },
-      { label: "Jogger",         imageKey: "lowers-ns" },
+      { label: "NS Lycra Lower",     imageKey: "lowers-ns"       },   // ₹499
+      { label: "Knitted Lycra Lower",imageKey: "lowers-elite"    },   // ₹699
+      { label: "Zurich Lower",       imageKey: "lowers-elite"    },   // ₹499
+      { label: "Sublimated Lower",   imageKey: "lowers-diagonal" },   // ₹999  Zurich & Diagonal
+      { label: "Superpoly Lower",    imageKey: "lowers-ns"       },   // ₹499
     ],
     order: 4,
     categoryImageKey: "lowers-elite",
@@ -370,12 +398,18 @@ const CATEGORIES: CatSpec[] = [
     name: "Tracksuits",
     slug: "tracksuits",
     description:
-      "Complete tracksuit sets — jacket and lower — for teams, academies and institutions.",
-    count: 15,
+      "Complete tracksuit sets in Knitted Lycra, NS Lycra, Zurich and Superpoly — plain or sublimated. MOQ 5 pcs, sizes S–2XL.",
+    // 8 material+print variants × 2 designs each = 16 products
+    count: 16,
     styles: [
-      { label: "Team Tracksuit",     imageKey: "tracksuit-lycra" },
-      { label: "Presentation Set",   imageKey: "tracksuit-ns" },
-      { label: "Winter Tracksuit",   imageKey: "tracksuit-tpu" },
+      { label: "Plain Knitted Lycra",     imageKey: "tracksuit-lycra" },  // ₹1699
+      { label: "Sublimated Knitted Lycra",imageKey: "tracksuit-lycra" },  // ₹1799
+      { label: "Plain NS Lycra",          imageKey: "tracksuit-ns"   },  // ₹1799
+      { label: "Sublimated NS Lycra",     imageKey: "tracksuit-ns"   },  // ₹1899
+      { label: "Plain Zurich",            imageKey: "tracksuit-tpu"  },  // ₹1599
+      { label: "Sublimated Zurich",       imageKey: "tracksuit-tpu"  },  // ₹1699
+      { label: "Plain Superpoly",         imageKey: "tracksuit-tpu"  },  // ₹1199
+      { label: "Sublimated Superpoly",    imageKey: "tracksuit-tpu"  },  // ₹1299
     ],
     order: 5,
     categoryImageKey: "tracksuit-tpu",
