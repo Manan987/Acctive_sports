@@ -17,7 +17,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "npm run db:provider && prisma studio",
     "db:reset": "npm run db:provider && prisma db push --force-reset && tsx prisma/seed.ts",
-    "db:deploy": "npm run db:provider && prisma db push && tsx prisma/seed.ts"
+    "db:deploy": "npm run db:provider && prisma db push && tsx prisma/seed.ts",
+    "db:prices": "npm run db:provider && node scripts/apply-prices.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

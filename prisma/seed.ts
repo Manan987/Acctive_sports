@@ -10,6 +10,85 @@ const SPORTS = [
   "Hockey", "Tennis", "Boxing", "Athletics",
 ];
 
+/**
+ * Official ACCTIVE Sports price list (MRP in INR).
+ * Key: "categorySlug::styleLabel" (lower-cased, trimmed).
+ * Discounts (25% single / 50% bulk 5+ pcs) are applied at runtime
+ * by src/lib/pricing.ts — never hard-code a discounted price here.
+ *
+ * A. Round Neck T-Shirts
+ *   Plain (Selena)                     ₹299
+ *   Front Sublimation (F1 Series)      ₹399
+ *   Front & Back Sublimation (FB)      ₹499
+ *   Full Sublimation (FL Series)       ₹599
+ *
+ * B. Collar T-Shirts
+ *   SAP Mattie (SAP Series)            ₹499
+ *   Front & Back Sublimation (FB)      ₹699
+ *   Full Sublimation (FL Series)       ₹799
+ *
+ * C. Shorts
+ *   NS Lycra Shorts (Basketball)       ₹399
+ *   Knitted Lycra/Spandex (Training)   ₹499
+ *   Match Shorts (Zurich/Elite)        ₹399
+ *   Sublimated Shorts                  ₹599
+ *   Athlete/Cycling Shorts             ₹699
+ *   Superpoly Shorts                   ₹399
+ *
+ * D. Lowers
+ *   NS Lycra Lower (Jogger)            ₹499
+ *   Knitted Lycra Lower (Regular)      ₹699
+ *   Zurich/Slim Fit Lower              ₹499
+ *   Sublimated Lower                   ₹999
+ *   Superpoly Lower                    ₹499
+ *
+ * E. Tracksuits
+ *   Plain Knitted Lycra (Team)         ₹1699
+ *   Sublimated Knitted Lycra           ₹1799
+ *   Plain NS Lycra (Presentation)      ₹1799
+ *   Sublimated NS Lycra                ₹1899
+ *   Plain Zurich (Winter)              ₹1599
+ *   Sublimated Zurich                  ₹1699
+ *   Plain Superpoly                    ₹1199
+ *   Sublimated Superpoly               ₹1299
+ *
+ * F. Jackets
+ *   Full Sublimation Jacket            ₹1999
+ *   Cut & Sew Pattern Jacket           ₹1899
+ */
+const PRICE_MAP: Record<string, number> = {
+  // Round Neck T-Shirts
+  "round-neck-t-shirts::classic fit":              299,
+  "round-neck-t-shirts::front sublimation":        399,
+  "round-neck-t-shirts::front & back sublimation": 499,
+  "round-neck-t-shirts::full sublimation":         599,
+  // Collar T-Shirts
+  "collar-t-shirts::sap mattie":                   499,
+  "collar-t-shirts::front & back sublimation":     699,
+  "collar-t-shirts::full sublimation":             799,
+  // Shorts
+  "shorts::basketball shorts":                     399,
+  "shorts::training shorts":                       499,
+  "shorts::match shorts":                          399,
+  // Lowers
+  "lowers::jogger":                                499,
+  "lowers::regular lower":                         699,
+  "lowers::slim fit lower":                        499,
+  // Tracksuits
+  "tracksuits::team tracksuit":                    1699,
+  "tracksuits::presentation set":                  1799,
+  "tracksuits::winter tracksuit":                  1599,
+  // Jackets
+  "jackets::full sublimation jacket":              1999,
+  "jackets::cut & sew pattern jacket":             1899,
+};
+
+/** Resolve MRP for a product from its category slug + style label. */
+function priceFor(categorySlug: string, styleLabel: string): number | null {
+  const key = `${categorySlug}::${styleLabel.toLowerCase()}`;
+  return PRICE_MAP[key] ?? null;
+}
+
 // ---- Real product image pools per category style ----
 // Keys match the style names used in CATEGORIES below.
 const IMAGES: Record<string, string[]> = {
@@ -354,6 +433,8 @@ async function main() {
       const imagePool = IMAGES[styleSpec.imageKey] ?? ["/placeholder-product.svg"];
       const productImage = pickImage(imagePool, i);
 
+      const price = priceFor(cat.slug, styleSpec.label);
+
       products.push({
         name,
         slug: slugify(`${cat.slug}-${styleSpec.label}-${design}`),
@@ -362,7 +443,8 @@ async function main() {
         fabrics: JSON.stringify(pick(FABRICS, 3 + (i % 3))),
         sizes: JSON.stringify(SIZES),
         sports: JSON.stringify(sports),
-        moq: 1,
+        price,          // MRP — discounts applied at runtime by lib/pricing.ts
+        moq: 5,         // All products: minimum order 5 pieces
         featured: i <= 2,
         published: true,
         categoryId: category.id,
