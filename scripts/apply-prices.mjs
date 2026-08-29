@@ -184,6 +184,16 @@ async function main() {
     console.log(`\n  ✓  MOQ normalised to ${MOQ} on ${moqFix.count} remaining product(s)`);
   }
 
+  // Normalise sizes to S, M, L, XL, XXL on every product
+  const CORRECT_SIZES = JSON.stringify(["S", "M", "L", "XL", "XXL"]);
+  const sizesFix = await prisma.product.updateMany({
+    where: { sizes: { not: CORRECT_SIZES } },
+    data: { sizes: CORRECT_SIZES },
+  });
+  if (sizesFix.count > 0) {
+    console.log(`  ✓  Sizes normalised to S/M/L/XL/XXL on ${sizesFix.count} product(s)`);
+  }
+
   // Report anything still unpriced
   const unpriced = await prisma.product.count({ where: { price: null } });
   if (unpriced > 0) {

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 const FABRICS = ["Lycra", "Superpoly", "SAP Mattie", "TPU", "NS Lycra", "Elite Knit"];
-const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
+const SIZES = ["S", "M", "L", "XL", "XXL"];
 const SPORTS = [
   "Cricket", "Football", "Basketball", "Badminton",
   "Hockey", "Tennis", "Boxing", "Athletics",
