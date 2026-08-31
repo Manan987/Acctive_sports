@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useCustomer } from "@/context/CustomerContext";
 import { formatINR } from "@/lib/utils";
 import { cartTotals, unitPrice } from "@/lib/pricing";
 import { whatsappLink, payments, hasUpi, hasBankDetails, DISCOUNTS } from "@/lib/site";
@@ -40,12 +41,25 @@ const PAYMENT_OPTIONS: { id: PaymentMethod; label: string; icon: IconName; desc:
 
 export default function CheckoutPage() {
   const { items, totalPieces, clear } = useCart();
+  const { customer, isLoggedIn, isLoading, login } = useCustomer();
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
   const [hpUrl, setHpUrl] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [orderId, setOrderId] = useState("");
+
+  // Auto-fill from customer profile when they log in
+  useEffect(() => {
+    if (customer) {
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name || customer.name,
+        phone: prev.phone || customer.phone,
+        email: prev.email || customer.email || "",
+      }));
+    }
+  }, [customer]);
 
   // Same engine the cart and the server use, so the figure confirmed here is
   // the figure recorded against the order.
@@ -109,6 +123,40 @@ export default function CheckoutPage() {
             <Link href="/catalogue" className="btn-primary">Browse catalogue</Link>
             <Link href="/cart" className="btn-secondary">View cart</Link>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Login gate — show a premium login prompt if not authenticated
+  if (!isLoggedIn && status !== "done") {
+    return (
+      <div className="container-x py-24 text-center">
+        <div className="mx-auto max-w-md">
+          <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-flame-500/10 text-flame-500">
+            <Icon name="shieldCheck" size={38} />
+          </div>
+          <h1 className="mt-8 text-3xl font-extrabold">
+            {isLoading ? "Checking session…" : "Login to checkout"}
+          </h1>
+          <p className="mt-3 text-ink-500 dark:text-ink-400">
+            Verify your identity with a quick OTP before placing your order.
+            This keeps your account secure and ensures a genuine purchase.
+          </p>
+          {!isLoading && (
+            <button
+              onClick={login}
+              className="btn-primary mt-8 mx-auto"
+            >
+              <Icon name="phone" size={18} />
+              Verify with OTP
+            </button>
+          )}
+          {isLoading && (
+            <div className="mt-8 flex justify-center">
+              <span className="h-6 w-6 animate-spin rounded-full border-2 border-ink-300 border-t-flame-500" />
+            </div>
+          )}
         </div>
       </div>
     );

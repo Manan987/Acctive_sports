@@ -46,3 +46,45 @@ export async function getSession(): Promise<AdminSession | null> {
 export function destroySession() {
   cookies().delete(COOKIE);
 }
+
+// ---- Customer session (OTP-based) ----
+
+const CUSTOMER_COOKIE = "acctive_customer";
+
+export type CustomerSession = {
+  sub: string;      // customer.id
+  phone: string;
+  name: string;
+  email?: string;
+};
+
+export async function createCustomerSession(payload: CustomerSession) {
+  const token = await new SignJWT(payload as unknown as Record<string, unknown>)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(secret);
+
+  cookies().set(CUSTOMER_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  });
+}
+
+export async function getCustomerSession(): Promise<CustomerSession | null> {
+  const token = cookies().get(CUSTOMER_COOKIE)?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload as unknown as CustomerSession;
+  } catch {
+    return null;
+  }
+}
+
+export function destroyCustomerSession() {
+  cookies().delete(CUSTOMER_COOKIE);
+}

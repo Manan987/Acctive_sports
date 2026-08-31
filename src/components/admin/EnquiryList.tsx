@@ -29,6 +29,7 @@ type Enquiry = {
   source: string;
   paymentMethod: string | null;
   total: number | null;
+  customerId: string | null;
   items: Item[];
   createdAt: string;
 };
@@ -105,6 +106,11 @@ export function EnquiryList({ enquiries }: { enquiries: Enquiry[] }) {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-semibold">{e.name}</span>
+                      {e.customerId && (
+                        <span className="badge bg-green-500/10 text-green-600">
+                          <Icon name="shieldCheck" size={12} /> Verified
+                        </span>
+                      )}
                       <span className={`badge ${STATUS_COLOR[e.status] || ""}`}>{e.status.replace("_", " ")}</span>
                       <span className={`badge ${SOURCE_COLOR[e.source] || "badge"}`}>{e.source}</span>
                       {e.paymentMethod && (

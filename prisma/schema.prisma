@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -55,16 +55,17 @@ model Enquiry {
   items         String   @default("[]")
   status        String   @default("NEW")
   source        String   @default("quote")
-  // How the customer intends to pay: upi | bank_transfer | cod | razorpay.
   paymentMethod String?
-  // Order total in INR, computed SERVER-side from catalogue prices at the time
-  // the order was placed. Null when every line is quote-only.
   total         Float?
+  customerId    String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  customer      Customer? @relation(fields: [customerId], references: [id])
+
   @@index([status])
   @@index([createdAt])
+  @@index([customerId])
 }
 
 model AdminUser {
@@ -74,3 +75,35 @@ model AdminUser {
   name         String   @default("Admin")
   createdAt    DateTime @default(now())
 }
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String   @unique
+  email     String?
+  city      String?
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enquiries Enquiry[]
+  otps      Otp[]
+
+  @@index([phone])
+}
+
+model Otp {
+  id         String   @id @default(cuid())
+  phone      String
+  code       String
+  expiresAt  DateTime
+  verified   Boolean  @default(false)
+  attempts   Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  @@index([phone, expiresAt])
+}
+

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { enquirySchema } from "@/lib/validation";
 import { tierFor, unitPrice } from "@/lib/pricing";
-import { getSession } from "@/lib/auth";
+import { getSession, getCustomerSession } from "@/lib/auth";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 import { serverError, readJson } from "@/lib/apiError";
 
@@ -39,6 +39,16 @@ export async function POST(req: Request) {
     console.warn("[enquiries] Honeypot tripped — discarding submission (website field was filled)");
     return NextResponse.json({ ok: true }, { status: 201 });
   }
+
+  // Customer authentication — required for cart orders, optional for quote/contact
+  const customerSession = await getCustomerSession();
+  if (data.source === "cart" && !customerSession) {
+    return NextResponse.json(
+      { error: "Please log in to place an order." },
+      { status: 401 }
+    );
+  }
+  const customerId = customerSession?.sub ?? null;
 
   try {
     // The cart lives in the browser's localStorage, so every field in it —
@@ -111,13 +121,10 @@ export async function POST(req: Request) {
         company: data.company || null,
         message: data.message || null,
         source: data.source,
-        // Previously accepted by the schema and then thrown away, so the admin
-        // had no way to know how the customer intended to pay.
         paymentMethod: data.paymentMethod ?? null,
-        // The payable total after the tier discount — the same figure the
-        // checkout summary showed the customer, not the MRP sum.
         total: hasPrice ? Math.round(total * 100) / 100 : null,
         items: JSON.stringify(items),
+        customerId,
       },
     });
 

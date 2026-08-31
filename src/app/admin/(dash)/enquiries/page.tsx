@@ -31,6 +31,7 @@ export default async function AdminEnquiries() {
       source: e.source,
       paymentMethod: e.paymentMethod,
       total: e.total,
+      customerId: e.customerId,
       items,
       createdAt: e.createdAt.toISOString(),
     };
